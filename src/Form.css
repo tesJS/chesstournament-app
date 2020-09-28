@@ -1,0 +1,13 @@
+.form-container {
+  display: grid;
+  width: auto;
+  text-align: left;
+  align-content: left;
+  margin: 10px;
+  background-color: yellowgreen;
+  border: 2px solid tomato;
+  margin: 10px;
+}
+form input {
+  width: 200px;
+}
