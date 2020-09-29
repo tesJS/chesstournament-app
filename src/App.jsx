@@ -74,17 +74,37 @@ class App extends Component {
     let pairedList = [];
     if (this.state.pairedButton) {
       let player1 = [];
+      let singlePlayer = false;
+      let oddPlayers = false;
+      let evenPlayers = false;
       let player2 = [];
-      this.state.players.forEach((el, ind) => {
-        if (ind % 2 == 0) player1.push(el);
-        else player2.push(el);
-      });
-      console.log(player1, player2);
+      let players = [...this.state.players];
+      let length = players.length;
 
-      for (var i = 0; i < player1.length; i++)
-        pairedList.push(
-          <Pairings alt1={player1[i].name} alt2={player2[i].name}></Pairings>
-        );
+      if (length < 2) singlePlayer = true;
+      else if (length % 2 !== 0) oddPlayers = true;
+
+      if (!singlePlayer) {
+        if (evenPlayers) {
+          players.forEach((el, ind) => {
+            if ((ind + 2) % 2 == 0) player1.push(el);
+            else player2.push(el);
+          });
+        }
+
+        if (oddPlayers) {
+          players.pop();
+          players.forEach((el, ind) => {
+            if ((ind + 2) % 2 == 0) player1.push(el);
+            else player2.push(el);
+          });
+        }
+
+        for (var i = 0; i < player1.length; i++)
+          pairedList.push(
+            <Pairings alt1={player1[i].name} alt2={player2[i].name}></Pairings>
+          );
+      }
     }
 
     console.log(this.state);
@@ -107,7 +127,8 @@ class App extends Component {
             <Form submit={e => this.submitHandler(e)}></Form>
           </div>
           <div>
-            Complete List of Round Pairings: <br></br>
+            <span>Complete List of Round Pairings </span>
+            <br></br>
             {pairedList}
           </div>
           <div> {listPlayers} </div>
