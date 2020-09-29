@@ -5,6 +5,10 @@ import styled from 'styled-components';
 const Form = props => {
   const StyledInput = styled.input`
     width: auto;
+    background-color: blue;
+    color: white;
+    right: 0px;
+    padding: 5px;
   `;
   let DOMstrings = {
     inputName: '#name',
