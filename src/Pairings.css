@@ -1,12 +1,3 @@
-.container1 {
-  display: grid;
-  grid-template-columns: 300px;
-  grid-gap: 50px;
-  margin: 10px;
-  background-color: seagreen;
-}
-.item1,
-.item2,
-.item3 {
+.item {
   margin: 10px;
 }

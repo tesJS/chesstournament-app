@@ -22,3 +22,7 @@ div span {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
 }
+
+.item {
+  margin: 10px;
+}
