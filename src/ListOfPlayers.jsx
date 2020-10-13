@@ -1,5 +1,4 @@
 import React from 'react';
-
 import './ListPlayers.css';
 
 const ListPlayers = props => {

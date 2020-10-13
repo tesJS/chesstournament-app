@@ -1,7 +1,6 @@
 import React from 'react';
 
 import './Pairings.css';
-import styled from 'styled-components';
 
 const Pairings = props => {
   return (
