@@ -5,7 +5,10 @@ import './Pairings.css';
 const Pairings = props => {
   return (
     //<div className='container1'>
-    <div className={props.players}>
+    <div
+      className={props.players}
+      style={{ border: '2px solid blue', margin: '10px' }}
+    >
       <label className='item' htmlFor='result'>
         {props.player1}
       </label>
@@ -18,9 +21,9 @@ const Pairings = props => {
         autoFocus
       >
         <option value='default'>vs.</option>
-        <option value='win'>win</option>
-        <option value='draw'>draw</option>
-        <option value='lose'>lose</option>
+        <option value='win'>1-0</option>
+        <option value='draw'>1/2-1/2</option>
+        <option value='lose'>0-1</option>
       </select>
       <label className='item' htmlFor='result'>
         {props.player2}

@@ -20,8 +20,24 @@ const StyledInput = styled.input`
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { players: [], pairButton: false };
+    this.state = {
+      players: [
+        new Player('Tesfaye Tassew', 1985, 'Helsingin Shakki Klubbi'),
+        new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
+        new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
+        new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
+        new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'),
+      ],
+      counter: 0,
+      showPlayersList: false,
+    };
+
+    this.state.players.forEach(el => {
+      el.setId();
+    });
   }
+
+  storeResults = [];
   DOMstrings = {
     inputName: '#name',
     inputElo: '#eloRating',
@@ -45,6 +61,7 @@ class App extends Component {
     event.preventDefault();
     //this.playRound();
     let newState = { ...this.state };
+
     //let uniqid = require('uniqid');
 
     let inputName = document.querySelector(this.DOMstrings.inputName);
@@ -56,7 +73,6 @@ class App extends Component {
 
     if (inputName.value !== '' && inputElo.value !== '') {
       newState.players.push(player);
-      newState.pairButton = false;
 
       inputName.value = '';
       inputElo.value = '';
@@ -68,8 +84,17 @@ class App extends Component {
   }
   pairedHandler() {
     let newState = { ...this.state };
-    newState.pairButton = true;
-    this.setState(newState);
+
+    if (!this.state.showPlayersList) {
+      /* newState.pairButton = true;
+      newState.resultButton = false; */
+      newState.showPlayersList = true;
+      newState.counter++;
+      this.setState(newState);
+    }
+    console.log('Pair Button', this.state);
+
+    //document.querySelector('.submitResults').disabled = true;
   }
 
   /* updatePlayers(e) {
@@ -84,7 +109,44 @@ class App extends Component {
     let result = e.target.value;
     let str = e.target.parentNode.className;
     let players = [...this.state.players];
+
+    let obj = {};
     let ids = str.split(' ');
+    obj.id = ids;
+
+    let searchIndex = this.storeResults.findIndex(el => {
+      return el.id === str;
+    });
+    if (searchIndex >= 0) this.storeResults.splice(searchIndex, 1);
+    if (result !== 'default') this.storeResults.push({ id: str, result });
+    console.log(this.storeResults);
+  }
+
+  roundResultHandler(e) {
+    let newState = { ...this.state };
+    let noPlayers = this.state.players.length;
+    let gamesPerRound = Math.floor(noPlayers / 2);
+    if (this.storeResults.length === gamesPerRound) {
+      this.storeResults.forEach(el => {
+        this.selectProsessor(el);
+      });
+      newState.showPlayersList = false;
+      this.setState(newState);
+      this.storeResults = [];
+    } else if (!newState.showPlayersList) alert('Proceed to Next Round!');
+    else alert('Enter all games result!');
+
+    /*  this.state.players.forEach(el => {
+      console.log(el);
+    }); */
+  }
+
+  selectProsessor(obj) {
+    let result = obj.result;
+    let str = obj.id;
+    let players = [...this.state.players];
+    let ids = str.split(' ');
+
     let player1 = players.filter(el => {
       return el.id === ids[0];
     });
@@ -92,17 +154,12 @@ class App extends Component {
       return el.id === ids[1];
     });
 
-    /* if (result == 'win') console.log(player1[0].name + ' wins');
-    else if (result == 'lose') console.log(player2[0].name + ' wins'); */
-
     switch (result) {
       case 'win':
-        console.log('Player 1 wins');
         player1[0].setWhiteTurns();
         player1[0].setScore(1);
         break;
       case 'lose':
-        console.log('Player 2 wins');
         player1[0].setWhiteTurns();
         player2[0].setScore(1);
         break;
@@ -110,32 +167,33 @@ class App extends Component {
         player1[0].setWhiteTurns();
         player1[0].setScore(0.5);
         player2[0].setScore(0.5);
-
         break;
     }
-    console.log('Player1 ', player1[0]);
-    console.log('Player2 ', player2[0]);
-    /* console.log('the payers from the state', players);
-    console.log(ids);
-    console.log('Player1 type ', typeof player1); */
   }
 
   render() {
+    console.log('Result Button State', this.state);
+    console.log('Paired List:- ', this.pairedList);
+    console.log('This.storeResults :-', this.storeResults);
+    console.log('Counter:- ', this.state.counter);
+    const style = { border: '1px solid blue' };
     let pairedList = [];
-    if (this.state.pairButton) {
-      let round = new Round(this.state.players, 1);
-      let round1 = round.generateRoundGames();
-      console.log(round1);
-      for (var i = 0; i < round1.length; i++) {
-        pairedList.push(
-          <Pairings
-            key={`${round1[i].player1.id} + ${round1[i].player2.id}`}
-            player1={round1[i].player1.name}
-            player2={round1[i].player2.name}
-            players={`${round1[i].player1.id} ${round1[i].player2.id}`}
-            selected={this.selectHandler.bind(this)}
-          ></Pairings>
-        );
+    if (this.state.showPlayersList) {
+      {
+        let round = new Round(this.state.players, this.state.counter);
+        let round1 = round.generateRoundGames();
+
+        for (var i = 0; i < round1.length; i++) {
+          pairedList.push(
+            <Pairings
+              key={`${round1[i].player1.id} + ${round1[i].player2.id}`}
+              player1={round1[i].player1.name}
+              player2={round1[i].player2.name}
+              players={`${round1[i].player1.id} ${round1[i].player2.id}`}
+              selected={this.selectHandler.bind(this)}
+            ></Pairings>
+          );
+        }
       }
     }
 
@@ -160,8 +218,15 @@ class App extends Component {
 
           <div id='listOfGames' className='item listGames'>
             <span>Complete List of Round Pairings </span>
-            <br></br>
+            <br />
             {pairedList}
+            <button
+              className='submitResults'
+              onClick={this.roundResultHandler.bind(this)}
+              type='button'
+            >
+              Submit Results
+            </button>
           </div>
 
           <div className='item'> {listPlayers} </div>
@@ -174,6 +239,7 @@ class App extends Component {
             <div className='pairButton'>
               {' '}
               <StyledInput
+                id='pairButton'
                 onClick={this.pairedHandler.bind(this)}
                 type='button'
                 value='Pair players'
@@ -245,4 +311,59 @@ export default App;
           </ListPlayers>
         </div>
       );
-    }); */
+    }); 
+    
+    
+    
+  selectHandler(e) {
+     document
+      .querySelector('.listGames')
+      .addEventListener('onchange', this.updatePlayers); 
+    
+    this.pairedListSize++;
+    let result = e.target.value;
+    let str = e.target.parentNode.className;
+    let players = [...this.state.players];
+
+let obj={};
+    let ids = str.split(' ');
+    obj.id=ids;
+    this.storeResults.push({id:ids,result});
+
+    
+    let player1 = players.filter(el => {
+      return el.id === ids[0];
+    });
+    let player2 = players.filter(el => {
+      return el.id === ids[1];
+    });
+
+    /* if (result == 'win') console.log(player1[0].name + ' wins');
+    else if (result == 'lose') console.log(player2[0].name + ' wins'); 
+
+    switch (result) {
+      case 'win':
+        console.log('Player 1 wins');
+        player1[0].setWhiteTurns();
+        player1[0].setScore(1);
+        break;
+      case 'lose':
+        console.log('Player 2 wins');
+        player1[0].setWhiteTurns();
+        player2[0].setScore(1);
+        break;
+      case 'draw':
+        player1[0].setWhiteTurns();
+        player1[0].setScore(0.5);
+        player2[0].setScore(0.5);
+
+        break;
+    }
+    console.log('Player1 ', player1[0]);
+    console.log('Player2 ', player2[0]);
+    /* console.log('the payers from the state', players);
+    console.log(ids);
+    console.log('Player1 type ', typeof player1); 
+  }
+
+*/

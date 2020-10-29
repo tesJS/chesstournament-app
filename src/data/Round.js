@@ -6,30 +6,92 @@ class Round {
     this.listOfPlayers = listOfPlayers;
     this.roundNo = roundNo;
   }
+  nodesGenerator(players) {
+    let player1, player2;
+    let nodes = [];
+    let noPlayers = players.length;
+    var i,
+      j = 0,
+      byePlayer;
+    let mid = noPlayers / 2;
+    let gamesPerRound = players.length / 2;
 
-  generateRoundGames() {
-    let player1, player2, game;
+    for (i = 0; i < noPlayers - 1; i++) {
+      j++;
+      player1 = players[i];
+      player2 = players[j];
+      nodes.push(new Game(player1, player2));
+    }
+    return nodes;
+  }
+
+  checkNodes(nodes) {
+    let repeatGames = [];
+    nodes.array.forEach((el, ind) => {
+      if (el.player1.getOpponentList().includes(el.player2))
+        repeatGames.push(ind);
+    });
+    return repeatGames;
+  }
+
+  totalPlayers(playersList) {
     let singlePlayer = false;
     let oddPlayersList = false;
     let evenPlayersList = false;
-    let roundGames = [];
-    let noPlayers = this.listOfPlayers.length;
-    let players = this.listOfPlayers;
-    var i;
-    let mid = noPlayers / 2;
+    let noPlayers = playersList.length;
 
     if (noPlayers < 2) singlePlayer = true;
     else if (noPlayers % 2 !== 0) oddPlayersList = true;
     else if (noPlayers % 2 === 0) evenPlayersList = true;
 
+    return {
+      singlePlayer,
+      oddPlayersList,
+      evenPlayersList,
+      sortPlayersElo: function (plList) {
+        plList.sort(function (pl1, pl2) {
+          return pl2.elo - pl1.elo;
+        });
+      },
+      sortPlayersScore: function (plList) {
+        plList.sort(function (pl1, pl2) {
+          return pl1.score - pl2.score;
+        });
+      },
+    };
+  }
+
+  generateRoundGames() {
+    let player1, player2;
+    let roundGames = [];
+    let noPlayers = this.listOfPlayers.length;
+    let players = [...this.listOfPlayers];
+    var i, j, byePlayer;
+    let mid = noPlayers / 2;
+    let gamesPerRound = roundGames.length;
+    const {
+      singlePlayer,
+      oddPlayersList,
+      evenPlayersList,
+      sortPlayersElo,
+      sortPlayersScore,
+    } = this.totalPlayers(players);
+
     if (singlePlayer) console.log('Need atleast 2 players to play a round!!!');
-    else if (this.roundNo === 1 && !singlePlayer) {
-      players.sort((pl1, pl2) => {
-        return pl1.elo - pl2.elo;
-      });
+    else {
+      //sort players according to elo for first round
+
+      // set mid point for first round pairing
       if (evenPlayersList) {
         mid = noPlayers / 2;
-
+      } else if (oddPlayersList) {
+        sortPlayersElo(players);
+        mid = (noPlayers - 1) / 2;
+        byePlayer = players.pop();
+      }
+      //pair players for  round 1
+      if (this.roundNo === 1) {
+        sortPlayersElo(players);
         for (i = 0; i < mid; i++) {
           player1 = players[i];
           while (mid < players.length) {
@@ -39,15 +101,20 @@ class Round {
             break;
           }
         }
-      } else if (oddPlayersList) {
-        mid = (noPlayers - 1) / 2;
+      }
+      // Procedure for rest of round
+      else if (this.roundNo > 1) {
+        // sort players according to score
+        sortPlayersScore(players);
+
         for (i = 0; i < mid; i++) {
           player1 = players[i];
-          while (mid < players.length - 1) {
-            player2 = players[mid];
-            roundGames.push(new Game(player1, player2));
-            mid++;
-            break;
+          for (j = i + 1; j < noPlayers; j++) {
+            if (!player1.oppList.includes(players[j])) {
+              player2 = players[j];
+              roundGames.push(new Game(player1, player2));
+              break;
+            }
           }
         }
       }

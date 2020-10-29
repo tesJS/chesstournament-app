@@ -3,6 +3,7 @@ import uniqid from 'uniqid';
 export default class Player {
   oppList = [];
   id = '';
+  elo = '';
   score = 0;
   whiteTurns = 0;
   constructor(name, elo, club) {
