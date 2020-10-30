@@ -5,6 +5,10 @@ class Round {
   constructor(listOfPlayers, roundNo) {
     this.listOfPlayers = listOfPlayers;
     this.roundNo = roundNo;
+    listOfPlayers.forEach(el => {
+      el.setId();
+    });
+    console.log('Round Class', listOfPlayers);
   }
   nodesGenerator(players) {
     let player1, player2;
@@ -39,6 +43,7 @@ class Round {
     let oddPlayersList = false;
     let evenPlayersList = false;
     let noPlayers = playersList.length;
+    let repeat;
 
     if (noPlayers < 2) singlePlayer = true;
     else if (noPlayers % 2 !== 0) oddPlayersList = true;
@@ -48,21 +53,26 @@ class Round {
       singlePlayer,
       oddPlayersList,
       evenPlayersList,
-      sortPlayersElo: function (plList) {
+      sortPlayersByElo: function (plList) {
         plList.sort(function (pl1, pl2) {
           return pl2.elo - pl1.elo;
         });
       },
-      sortPlayersScore: function (plList) {
+      sortPlayersByScore: function (plList) {
         plList.sort(function (pl1, pl2) {
           return pl1.score - pl2.score;
+        });
+      },
+      sortPlayersByWhiteTurns: function (plList) {
+        plList.sort(function (pl1, pl2) {
+          return pl2.whiteTurns - pl1.whiteTurns;
         });
       },
     };
   }
 
   generateRoundGames() {
-    let player1, player2;
+    let player1, player2, repeat;
     let roundGames = [];
     let noPlayers = this.listOfPlayers.length;
     let players = [...this.listOfPlayers];
@@ -73,8 +83,9 @@ class Round {
       singlePlayer,
       oddPlayersList,
       evenPlayersList,
-      sortPlayersElo,
-      sortPlayersScore,
+      sortPlayersByElo,
+      sortPlayersByScore,
+      sortPlayersByWhiteTurns,
     } = this.totalPlayers(players);
 
     if (singlePlayer) console.log('Need atleast 2 players to play a round!!!');
@@ -85,14 +96,15 @@ class Round {
       if (evenPlayersList) {
         mid = noPlayers / 2;
       } else if (oddPlayersList) {
-        sortPlayersElo(players);
+        sortPlayersByElo(players);
         mid = (noPlayers - 1) / 2;
+        noPlayers--;
         byePlayer = players.pop();
       }
       //pair players for  round 1
       if (this.roundNo === 1) {
-        sortPlayersElo(players);
-        for (i = 0; i < mid; i++) {
+        sortPlayersByElo(players);
+        for (i = 0; i <= noPlayers - 2; i++) {
           player1 = players[i];
           while (mid < players.length) {
             player2 = players[mid];
@@ -105,13 +117,19 @@ class Round {
       // Procedure for rest of round
       else if (this.roundNo > 1) {
         // sort players according to score
-        sortPlayersScore(players);
+        sortPlayersByScore(players);
 
-        for (i = 0; i < mid; i++) {
+        for (i = 0; i <= noPlayers - 2; i += 2) {
           player1 = players[i];
-          for (j = i + 1; j < noPlayers; j++) {
-            if (!player1.oppList.includes(players[j])) {
-              player2 = players[j];
+          for (j = i + 1; j <= noPlayers - 1; j += 2) {
+            player2 = players[j];
+            repeat = player1.oppList.includes(players[j]);
+            if (!repeat && player1.id !== player2.id) {
+              if (player1.whiteTurns > player2.whiteTurns)
+                [player1, player2] = [player2, player1];
+              player1.whiteTurns++;
+              player1.setOpponentList(player2);
+              player2.setOpponentList(player1);
               roundGames.push(new Game(player1, player2));
               break;
             }

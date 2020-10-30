@@ -44,25 +44,10 @@ class App extends Component {
     inputClub: '#club',
   };
 
-  /* playRound() {
-    const Player = function (name, elo, club, score, opponent) {
-      this.id = uniqid();
-      this.name = name;
-      this.elo = elo;
-      this.club = club;
-      this.score = score;
-    };
-    const counter = 0;
-    const temp = [...this.state.players];
-    const players = temp.map(el => new Player(el.id, el.elo, el.club));
-  } */
-
   submitHandler(event) {
     event.preventDefault();
-    //this.playRound();
-    let newState = { ...this.state };
 
-    //let uniqid = require('uniqid');
+    let newState = { ...this.state };
 
     let inputName = document.querySelector(this.DOMstrings.inputName);
     let inputElo = document.querySelector(this.DOMstrings.inputElo);
@@ -84,7 +69,7 @@ class App extends Component {
   }
   pairedHandler() {
     let newState = { ...this.state };
-
+    console.log('The state from pairHandler', newState);
     if (!this.state.showPlayersList) {
       /* newState.pairButton = true;
       newState.resultButton = false; */
@@ -93,19 +78,9 @@ class App extends Component {
       this.setState(newState);
     }
     console.log('Pair Button', this.state);
-
-    //document.querySelector('.submitResults').disabled = true;
   }
 
-  /* updatePlayers(e) {
-    console.log(e.target.value);
-  } */
-
   selectHandler(e) {
-    /* document
-      .querySelector('.listGames')
-      .addEventListener('onchange', this.updatePlayers); */
-
     let result = e.target.value;
     let str = e.target.parentNode.className;
     let players = [...this.state.players];
@@ -135,10 +110,6 @@ class App extends Component {
       this.storeResults = [];
     } else if (!newState.showPlayersList) alert('Proceed to Next Round!');
     else alert('Enter all games result!');
-
-    /*  this.state.players.forEach(el => {
-      console.log(el);
-    }); */
   }
 
   selectProsessor(obj) {
@@ -172,10 +143,10 @@ class App extends Component {
   }
 
   render() {
-    console.log('Result Button State', this.state);
+    /* console.log('Result Button State', this.state);
     console.log('Paired List:- ', this.pairedList);
     console.log('This.storeResults :-', this.storeResults);
-    console.log('Counter:- ', this.state.counter);
+    console.log('Counter:- ', this.state.counter); */
     const style = { border: '1px solid blue' };
     let pairedList = [];
     if (this.state.showPlayersList) {
@@ -253,117 +224,3 @@ class App extends Component {
 }
 
 export default App;
-
-/* 
-
-{
-    let pairedList = [];
-    if (this.state.pairButton) {
-      let player1 = [];
-      let singlePlayer = false;
-      let oddPlayersList = false;
-      let evenPlayersList = false;
-      let player2 = [];
-      let players = [...this.state.players];
-      let length = players.length;
-
-      if (length < 2) singlePlayer = true;
-      else if (length % 2 !== 0) oddPlayersList = true;
-      else evenPlayersList = true;
-
-      if (!singlePlayer) {
-        if (evenPlayersList) {
-          players.forEach((el, ind) => {
-            if (ind % 2 == 0) player1.push(el);
-            else player2.push(el);
-          });
-        }
-      }
-
-      if (oddPlayersList) {
-        let unpairedPlayer = players.pop();
-        console.log('Unpaired Player', unpairedPlayer);
-        players.forEach((el, ind) => {
-          if (ind % 2 == 0) player1.push(el);
-          else player2.push(el);
-        });
-      }
-
-      for (var i = 0; i < player1.length; i++)
-        pairedList.push(
-          <Pairings
-            key={`${player1[i].id} + ${player2[i].id}`}
-            player1={player1[i].name}
-            player2={player2[i].name}
-            players={`${player1[i].id} ${player2[i].id}`}
-            selected={this.selectHandler.bind(this)}
-          ></Pairings>
-        );
-    }
-
-    console.log('The state', this.state);
-
-    let listPlayers = this.state.players.map((el, ind) => {
-      return (
-        <div key={el.id}>
-          <ListPlayers>
-            {el.name} {el.elo} {el.club}
-          </ListPlayers>
-        </div>
-      );
-    }); 
-    
-    
-    
-  selectHandler(e) {
-     document
-      .querySelector('.listGames')
-      .addEventListener('onchange', this.updatePlayers); 
-    
-    this.pairedListSize++;
-    let result = e.target.value;
-    let str = e.target.parentNode.className;
-    let players = [...this.state.players];
-
-let obj={};
-    let ids = str.split(' ');
-    obj.id=ids;
-    this.storeResults.push({id:ids,result});
-
-    
-    let player1 = players.filter(el => {
-      return el.id === ids[0];
-    });
-    let player2 = players.filter(el => {
-      return el.id === ids[1];
-    });
-
-    /* if (result == 'win') console.log(player1[0].name + ' wins');
-    else if (result == 'lose') console.log(player2[0].name + ' wins'); 
-
-    switch (result) {
-      case 'win':
-        console.log('Player 1 wins');
-        player1[0].setWhiteTurns();
-        player1[0].setScore(1);
-        break;
-      case 'lose':
-        console.log('Player 2 wins');
-        player1[0].setWhiteTurns();
-        player2[0].setScore(1);
-        break;
-      case 'draw':
-        player1[0].setWhiteTurns();
-        player1[0].setScore(0.5);
-        player2[0].setScore(0.5);
-
-        break;
-    }
-    console.log('Player1 ', player1[0]);
-    console.log('Player2 ', player2[0]);
-    /* console.log('the payers from the state', players);
-    console.log(ids);
-    console.log('Player1 type ', typeof player1); 
-  }
-
-*/
