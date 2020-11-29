@@ -6,6 +6,17 @@
   border: 2px solid red;
 }
 
+.Button {
+  width: 500px;
+  height: 100px;
+  background-color: dodgerblue;
+  color: rgb(14, 13, 13);
+  margin-right: 10px;
+  margin-left: 300px;
+  padding: 5px;
+  font-size: large;
+}
+
 .lowerHalf {
   grid-column: 1 / span 3;
   display: flex;

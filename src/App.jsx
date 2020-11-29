@@ -7,16 +7,6 @@ import styled from 'styled-components';
 import Player from './data/Player';
 import Round from './data/Round';
 
-const StyledInput = styled.input`
-  width: 200px;
-  height: 50px;
-  background-color: dodgerblue;
-  color: white;
-  right: 0px;
-  padding: 5px;
-  font-size: large;
-`;
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +20,7 @@ class App extends Component {
       ],
       counter: 0,
       showPlayersList: false,
+      currentRoundGames: [],
     };
 
     this.state.players.forEach(el => {
@@ -67,6 +58,8 @@ class App extends Component {
       window.alert("Player's name and elo-rating are required!");
     }
   }
+
+  //Pair Players Buton-Handler
   pairedHandler() {
     let newState = { ...this.state };
     console.log('The state from pairHandler', newState);
@@ -77,9 +70,9 @@ class App extends Component {
       newState.counter++;
       this.setState(newState);
     }
-    console.log('Pair Button', this.state);
+    console.log('Pair Players Button', this.state);
   }
-
+  //select option handler
   selectHandler(e) {
     let result = e.target.value;
     let str = e.target.parentNode.className;
@@ -94,14 +87,28 @@ class App extends Component {
     });
     if (searchIndex >= 0) this.storeResults.splice(searchIndex, 1);
     if (result !== 'default') this.storeResults.push({ id: str, result });
-    console.log(this.storeResults);
+    console.log('The State(selectHandler): ', this.state);
+    console.log('The StoreResults(selectHandler): ', this.storeResults);
   }
-
+  //Submit Results Button after the round games list - to enter the round games result
   roundResultHandler(e) {
     let newState = { ...this.state };
     let noPlayers = this.state.players.length;
     let gamesPerRound = Math.floor(noPlayers / 2);
-    if (this.storeResults.length === gamesPerRound) {
+
+    if (this.storeResults.length == gamesPerRound) {
+      this.storeResults.forEach(el => {
+        this.selectProsessor(el);
+      });
+      newState.showPlayersList = false;
+      this.setState(newState);
+      this.storeResults = [];
+    } else {
+      window.alert("Enter all games' results!");
+    }
+  }
+
+  /* if (this.storeResults.length === gamesPerRound) {
       this.storeResults.forEach(el => {
         this.selectProsessor(el);
       });
@@ -110,7 +117,7 @@ class App extends Component {
       this.storeResults = [];
     } else if (!newState.showPlayersList) alert('Proceed to Next Round!');
     else alert('Enter all games result!');
-  }
+  } */
 
   selectProsessor(obj) {
     let result = obj.result;
@@ -151,19 +158,29 @@ class App extends Component {
     let pairedList = [];
     if (this.state.showPlayersList) {
       {
-        let round = new Round(this.state.players, this.state.counter);
+        let round = new Round(
+          this.state.players,
+          this.state.counter,
+          this.state.currentRoundGames
+        );
         let round1 = round.generateRoundGames();
+        console.log('Rond1 object:- ', round1);
 
-        for (var i = 0; i < round1.length; i++) {
-          pairedList.push(
-            <Pairings
-              key={`${round1[i].player1.id} + ${round1[i].player2.id}`}
-              player1={round1[i].player1.name}
-              player2={round1[i].player2.name}
-              players={`${round1[i].player1.id} ${round1[i].player2.id}`}
-              selected={this.selectHandler.bind(this)}
-            ></Pairings>
-          );
+        if (round1 != null) {
+          this.state.currentRoundGames.push(round1);
+
+          for (var i = 0; i < round1.length; i++) {
+            pairedList.push(
+              <Pairings
+                key={`${round1[i].player1.id} ${round1[i].player2.id}`}
+                player1={round1[i].player1.name}
+                player2={round1[i].player2.name}
+                players={`${round1[i].player1.id} ${round1[i].player2.id}`}
+                selected={this.selectHandler.bind(this)}
+              ></Pairings>
+            );
+          }
+          console.log('Paired List:- ', pairedList);
         }
       }
     }
@@ -207,14 +224,17 @@ class App extends Component {
               <h2>Lower Half Section</h2>{' '}
             </div>
 
-            <div className='pairButton'>
+            <div>
               {' '}
-              <StyledInput
+              <button
+                className='Button'
                 id='pairButton'
                 onClick={this.pairedHandler.bind(this)}
                 type='button'
                 value='Pair players'
-              ></StyledInput>{' '}
+              >
+                Pair Players
+              </button>
             </div>
           </div>
         </div>
