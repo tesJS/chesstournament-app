@@ -61,12 +61,15 @@ class Round {
         });
         return bool1 && bool2;
       });
+      playerGames = candidateGames.filter(game => {
+        return game.player1.id == player.id || game.player2.id == player.id;
+      });
 
       /* playerGames = candidateGames.filter(game => {
         return game.player1.id === player.id || game.player2.id === player.id;
       }); */
 
-      var sortedPlayerGames = candidateGames.sort((o1, o2) => {
+      var sortedPlayerGames = playerGames.sort((o1, o2) => {
         o1ScoreDiff = Math.abs(o1.player2.score - o1.player1.score);
         o1EloDiff = Math.abs(o1.player2.elo - o1.player1.elo);
         o2ScoreDiff = Math.abs(o2.player2.score - o2.player1.score);
@@ -165,7 +168,9 @@ class Round {
     //sort players according to elo for first round
     // set mid point for first round pairing
     else if (evenPlayersList) {
+      sortPlayersByElo(players);
       mid = noPlayers / 2;
+      gamesPerRound = noPlayers / 2;
     } else if (oddPlayersList) {
       sortPlayersByElo(players);
       mid = (noPlayers - 1) / 2;
@@ -174,7 +179,6 @@ class Round {
       byePlayer = players.pop();
     }
     allGames = this.createAllGames(players);
-
     //pair players for  round 1
     if (this.roundNo === 1) {
       sortPlayersByElo(players);
@@ -204,39 +208,75 @@ class Round {
       while (isNotPaired) {
         counter++;
 
-        for (let j = 0; j < players.length; j++) {
-          console.log('The diminishing  for loop inside while loop ', players);
-          if (counter == 1) sortPlayersByScore(players);
-          else shufflePlayers(players);
-          console.log('Sorted Players: ', players);
-          playerGames = this.filterGames(allGames, players[j], players);
-
-          console.log(
-            'List of games including only the player in question(playerGames): ',
-            playerGames
-          );
-
-          //filter players who are already paired
-
-          pairedPlayers.push(playerGames[0].player1);
-          pairedPlayers.push(playerGames[0].player2);
-          pairedPlayers = pairedPlayers.flat();
-
-          unpairedPlayers = players.filter((elt, ind) => {
-            return !pairedPlayers.some(el => {
-              return elt.id == el.id;
+        for (let j = 0; j < gamesPerRound; j++) {
+          if (players.length == 2) {
+            bool = this.allGamesPlayed.flat().some(el => {
+              return (
+                (el.player1.id == players[0].id ||
+                  el.player1.id == players[1].id) &&
+                (el.player2.id == players[0].id ||
+                  el.player2.id == players[1].id)
+              );
             });
-          });
+            if (bool) {
+              players = [];
+            } else {
+              roundGames.push(new Game(players[0], players[1]));
+              players = [];
+            }
+          } else {
+            console.log('J= ', j);
+            console.log(
+              'The diminishing players inside the for loop of while loop ',
+              players
+            );
+            if (counter == 1) {
+              console.log('Sorted Players: ', players);
+              sortPlayersByScore(players);
+            } else {
+              shufflePlayers(players);
+              console.log('Shuffled Players: ', players);
+            }
+            playerGames = this.filterGames(allGames, players[j], players);
 
-          totalUnpairedPlayers = unpairedPlayers.flat();
+            console.log(
+              'List of games including only the player in question(playerGames): ',
+              playerGames
+            );
 
-          roundGames.push(playerGames[0]);
+            //filter players who are already paired
+            if (playerGames.length > 0) {
+              pairedPlayers.push(playerGames[0].player1);
+              pairedPlayers.push(playerGames[0].player2);
+              pairedPlayers = pairedPlayers.flat();
+              roundGames.push(playerGames[0]);
+            }
 
-          players = totalUnpairedPlayers;
+            unpairedPlayers = players.filter((elt, ind) => {
+              return !pairedPlayers.some(el => {
+                return elt.id == el.id;
+              });
+            });
+
+            totalUnpairedPlayers = unpairedPlayers.flat();
+
+            players = totalUnpairedPlayers;
+          }
         } // end of for loop
+        console.log('The Round Games after for loop:- ', roundGames);
+        console.log('The shuffle:- ', roundGames);
+        console.log(
+          '*********************************************************************************'
+        );
 
         if (roundGames.length == gamesPerRound) {
           isNotPaired = false;
+        } else if (counter < 10) {
+          roundGames = [];
+          players = this.listOfPlayers;
+          pairedPlayers = [];
+          unpairedPlayers = [];
+          totalUnpairedPlayers = [];
         } else if (counter > 10) {
           pairDisorder = true;
           isNotPaired = false;

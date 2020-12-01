@@ -11,12 +11,21 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      players: [
-        new Player('Tesfaye Tassew', 1985, 'Helsingin Shakki Klubbi'),
+      /* new Player('Tesfaye Tassew', 1985, 'Helsingin Shakki Klubbi'),
         new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
         new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
         new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
+        new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'),
         new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'),
+        new Player('Kiros Alemayehu', 1500, 'Tigray Chess Federation'),
+        new Player('Hagos Berhe', 1700, 'Tigray Chess Federation'), */
+      players: [
+        new Player('A', 1985, 'Helsingin Shakki Klubbi'),
+        new Player('B', 2854, 'St Lous Chess Club'),
+        new Player('C', 2809, 'Russian Federation Chess'),
+        new Player('D', 1678, 'Ethiopian Chess Federation'),
+        new Player('E', 2178, 'Ethiopian Chess Federation'),
+        new Player('F', 2300, 'Tigray Chess Federation'),
       ],
       counter: 0,
       showPlayersList: false,
