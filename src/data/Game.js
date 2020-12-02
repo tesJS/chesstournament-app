@@ -10,7 +10,7 @@ export default class Game {
     if (this.player1.getWhiteTurns() > this.player2.getWhiteTurns())
       [this.player1, this.player2] = [this.player2, this.player1];
     else if (this.player1.getWhiteTurns() <= this.player2.getWhiteTurns())
-      [this.player1, this.player2] = [this.player1, this.player2];
+      [this.player1, this.player2] = [this.player2, this.player1];
   }
 
   /*  alreadyPlayed() {

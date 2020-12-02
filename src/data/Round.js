@@ -50,19 +50,18 @@ class Round {
         });
         return bool2;
       });
-      console.log('gamesYetToPlay:- ', gamesYetToPlay);
 
       candidateGames = gamesYetToPlay.filter(game => {
         var bool1 = players.some(el => {
-          return el.id == game.player1.id;
+          return el.id === game.player1.id;
         });
         var bool2 = players.some(el => {
-          return el.id == game.player2.id;
+          return el.id === game.player2.id;
         });
         return bool1 && bool2;
       });
       playerGames = candidateGames.filter(game => {
-        return game.player1.id == player.id || game.player2.id == player.id;
+        return game.player1.id === player.id || game.player2.id === player.id;
       });
 
       /* playerGames = candidateGames.filter(game => {
@@ -142,6 +141,7 @@ class Round {
       unpairedPlayers = [],
       totalUnpairedPlayers = [],
       bool,
+      byePlayer,
       pairDisorder = false,
       isNotPaired = true;
 
@@ -151,7 +151,6 @@ class Round {
     let players = [...this.listOfPlayers];
     var i,
       j,
-      byePlayer,
       counter = 0;
     let mid = noPlayers / 2;
     let gamesPerRound;
@@ -212,10 +211,10 @@ class Round {
           if (players.length == 2) {
             bool = this.allGamesPlayed.flat().some(el => {
               return (
-                (el.player1.id == players[0].id ||
-                  el.player1.id == players[1].id) &&
-                (el.player2.id == players[0].id ||
-                  el.player2.id == players[1].id)
+                (el.player1.id === players[0].id ||
+                  el.player1.id === players[1].id) &&
+                (el.player2.id === players[0].id ||
+                  el.player2.id === players[1].id)
               );
             });
             if (bool) {
@@ -225,31 +224,20 @@ class Round {
               players = [];
             }
           } else {
-            console.log('J= ', j);
-            console.log(
-              'The diminishing players inside the for loop of while loop ',
-              players
-            );
-            if (counter == 1) {
-              console.log('Sorted Players: ', players);
+            if (counter === 1) {
               sortPlayersByScore(players);
             } else {
               shufflePlayers(players);
-              console.log('Shuffled Players: ', players);
             }
-            playerGames = this.filterGames(allGames, players[j], players);
 
-            console.log(
-              'List of games including only the player in question(playerGames): ',
-              playerGames
-            );
-
-            //filter players who are already paired
-            if (playerGames.length > 0) {
-              pairedPlayers.push(playerGames[0].player1);
-              pairedPlayers.push(playerGames[0].player2);
-              pairedPlayers = pairedPlayers.flat();
-              roundGames.push(playerGames[0]);
+            if (playerGames !== null) {
+              playerGames = this.filterGames(allGames, players[j], players);
+              if (playerGames.length > 0) {
+                pairedPlayers.push(playerGames[0].player1);
+                pairedPlayers.push(playerGames[0].player2);
+                pairedPlayers = pairedPlayers.flat();
+                roundGames.push(playerGames[0]);
+              }
             }
 
             unpairedPlayers = players.filter((elt, ind) => {
@@ -264,7 +252,7 @@ class Round {
           }
         } // end of for loop
         console.log('The Round Games after for loop:- ', roundGames);
-        console.log('The shuffle:- ', roundGames);
+
         console.log(
           '*********************************************************************************'
         );
@@ -278,6 +266,10 @@ class Round {
           unpairedPlayers = [];
           totalUnpairedPlayers = [];
         } else if (counter > 10) {
+          console.log('The Round Games after counter>10 :- ', roundGames);
+          console.log(
+            '*********************************************************************************'
+          );
           pairDisorder = true;
           isNotPaired = false;
         }

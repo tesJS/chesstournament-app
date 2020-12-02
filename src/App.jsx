@@ -3,7 +3,7 @@ import './App.css';
 import Form from './Form';
 import ListPlayers from './ListOfPlayers';
 import Pairings from './Pairings';
-import styled from 'styled-components';
+
 import Player from './data/Player';
 import Round from './data/Round';
 
@@ -26,6 +26,8 @@ class App extends Component {
         new Player('D', 1678, 'Ethiopian Chess Federation'),
         new Player('E', 2178, 'Ethiopian Chess Federation'),
         new Player('F', 2300, 'Tigray Chess Federation'),
+        new Player('G', 2200, 'British Chess Federation'),
+        new Player('H', 2310, 'Italian Chess Federation'),
       ],
       counter: 0,
       showPlayersList: false,
@@ -71,7 +73,7 @@ class App extends Component {
   //Pair Players Buton-Handler
   pairedHandler() {
     let newState = { ...this.state };
-    console.log('The state from pairHandler', newState);
+
     if (!this.state.showPlayersList) {
       /* newState.pairButton = true;
       newState.resultButton = false; */
@@ -79,13 +81,11 @@ class App extends Component {
       newState.counter++;
       this.setState(newState);
     }
-    console.log('Pair Players Button', this.state);
   }
   //select option handler
   selectHandler(e) {
     let result = e.target.value;
     let str = e.target.parentNode.className;
-    let players = [...this.state.players];
 
     let obj = {};
     let ids = str.split(' ');
@@ -96,8 +96,6 @@ class App extends Component {
     });
     if (searchIndex >= 0) this.storeResults.splice(searchIndex, 1);
     if (result !== 'default') this.storeResults.push({ id: str, result });
-    console.log('The State(selectHandler): ', this.state);
-    console.log('The StoreResults(selectHandler): ', this.storeResults);
   }
   //Submit Results Button after the round games list - to enter the round games result
   roundResultHandler(e) {
@@ -105,7 +103,7 @@ class App extends Component {
     let noPlayers = this.state.players.length;
     let gamesPerRound = Math.floor(noPlayers / 2);
 
-    if (this.storeResults.length == gamesPerRound) {
+    if (this.storeResults.length === gamesPerRound) {
       this.storeResults.forEach(el => {
         this.selectProsessor(el);
       });
@@ -159,37 +157,30 @@ class App extends Component {
   }
 
   render() {
-    /* console.log('Result Button State', this.state);
-    console.log('Paired List:- ', this.pairedList);
-    console.log('This.storeResults :-', this.storeResults);
-    console.log('Counter:- ', this.state.counter); */
-    const style = { border: '1px solid blue' };
+    console.log('The state: ', this.state);
+
     let pairedList = [];
     if (this.state.showPlayersList) {
-      {
-        let round = new Round(
-          this.state.players,
-          this.state.counter,
-          this.state.currentRoundGames
-        );
-        let round1 = round.generateRoundGames();
-        console.log('Rond1 object:- ', round1);
+      let round = new Round(
+        this.state.players,
+        this.state.counter,
+        this.state.currentRoundGames
+      );
+      let round1 = round.generateRoundGames();
 
-        if (round1 != null) {
-          this.state.currentRoundGames.push(round1);
+      if (round1 != null) {
+        this.state.currentRoundGames.push(round1);
 
-          for (var i = 0; i < round1.length; i++) {
-            pairedList.push(
-              <Pairings
-                key={`${round1[i].player1.id} ${round1[i].player2.id}`}
-                player1={round1[i].player1.name}
-                player2={round1[i].player2.name}
-                players={`${round1[i].player1.id} ${round1[i].player2.id}`}
-                selected={this.selectHandler.bind(this)}
-              ></Pairings>
-            );
-          }
-          console.log('Paired List:- ', pairedList);
+        for (var i = 0; i < round1.length; i++) {
+          pairedList.push(
+            <Pairings
+              key={`${round1[i].player1.id} ${round1[i].player2.id}`}
+              player1={round1[i].player1.name}
+              player2={round1[i].player2.name}
+              players={`${round1[i].player1.id} ${round1[i].player2.id}`}
+              selected={this.selectHandler.bind(this)}
+            ></Pairings>
+          );
         }
       }
     }
