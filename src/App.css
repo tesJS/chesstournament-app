@@ -6,13 +6,25 @@
   border: 2px solid red;
 }
 
-.Button {
-  width: 500px;
+.submitButton {
+  border-radius: 12px;
+  width: 250px;
   height: 100px;
-  background-color: dodgerblue;
+  background-color: rgb(202, 17, 147);
   color: rgb(14, 13, 13);
-  margin-right: 10px;
-  margin-left: 300px;
+  margin-right: 30px;
+  margin-left: 30px;
+  padding: 5px;
+  font-size: large;
+}
+.pairButton {
+  border-radius: 12px;
+  width: 250px;
+  height: 100px;
+  background-color: rgb(138, 146, 20);
+  color: rgb(14, 13, 13);
+  margin-right: 30px;
+  margin-left: 250px;
   padding: 5px;
   font-size: large;
 }
@@ -23,17 +35,36 @@
   flex-direction: row;
   border: 2px solid blue;
 }
-.pairButton {
-  margin: 20px auto 20px auto;
-}
-div span {
-  background-color: rgb(22, 29, 36);
-  color: whitesmoke;
-  font-size: 18px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: bold;
-}
 
 .item {
   margin: 10px;
+}
+
+.listPairs {
+  background-color: rgb(202, 17, 147);
+  font-size: large;
+  font-weight: bold;
+}
+.listPlayers {
+  background-color: rgb(8, 151, 91);
+  font-size: large;
+  font-weight: bold;
+}
+
+.addPlayers {
+  background-color: dodgerblue;
+  font-size: large;
+  font-weight: bold;
+}
+
+.showResultButton {
+  border-radius: 12px;
+  width: 250px;
+  height: 100px;
+  background-color: rgb(36, 23, 116);
+  color: rgb(20, 2, 3);
+  margin-right: 30px;
+  margin-left: 30px;
+  padding: 5px;
+  font-size: large;
 }

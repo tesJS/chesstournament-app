@@ -11,15 +11,17 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      /* new Player('Tesfaye Tassew', 1985, 'Helsingin Shakki Klubbi'),
+      players: [
+        new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'),
         new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
         new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
         new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
         new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'),
         new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'),
-        new Player('Kiros Alemayehu', 1500, 'Tigray Chess Federation'),
+        /* new Player('Kiros Alemayehu', 1500, 'Tigray Chess Federation'),
         new Player('Hagos Berhe', 1700, 'Tigray Chess Federation'), */
-      players: [
+      ],
+      /*  players: [
         new Player('A', 1985, 'Helsingin Shakki Klubbi'),
         new Player('B', 2854, 'St Lous Chess Club'),
         new Player('C', 2809, 'Russian Federation Chess'),
@@ -28,8 +30,9 @@ class App extends Component {
         new Player('F', 2300, 'Tigray Chess Federation'),
         new Player('G', 2200, 'British Chess Federation'),
         new Player('H', 2310, 'Italian Chess Federation'),
-      ],
+      ], */
       counter: 0,
+      showResult: false,
       showPlayersList: false,
       currentRoundGames: [],
     };
@@ -115,17 +118,6 @@ class App extends Component {
     }
   }
 
-  /* if (this.storeResults.length === gamesPerRound) {
-      this.storeResults.forEach(el => {
-        this.selectProsessor(el);
-      });
-      newState.showPlayersList = false;
-      this.setState(newState);
-      this.storeResults = [];
-    } else if (!newState.showPlayersList) alert('Proceed to Next Round!');
-    else alert('Enter all games result!');
-  } */
-
   selectProsessor(obj) {
     let result = obj.result;
     let str = obj.id;
@@ -156,40 +148,69 @@ class App extends Component {
     }
   }
 
+  showResultHandler() {
+    let newState = { ...this.state };
+    console.log('Show Result button clicked!');
+    if (!this.state.showPlayersList) {
+      newState.showPlayersList = true;
+      newState.showResult = true;
+      this.setState(newState);
+    }
+  }
+
   render() {
     console.log('The state: ', this.state);
 
-    let pairedList = [];
-    if (this.state.showPlayersList) {
-      let round = new Round(
+    let pairedList = [],
+      players,
+      round = new Round(
         this.state.players,
         this.state.counter,
         this.state.currentRoundGames
-      );
-      let round1 = round.generateRoundGames();
+      ),
+      round1,
+      listPlayers,
+      showPlayersList = [];
 
+    round1 = round.generateRoundGames();
+    players = round.getPlayers();
+
+    if (this.state.showPlayersList) {
       if (round1 != null) {
         this.state.currentRoundGames.push(round1);
 
-        for (var i = 0; i < round1.length; i++) {
-          pairedList.push(
-            <Pairings
-              key={`${round1[i].player1.id} ${round1[i].player2.id}`}
-              player1={round1[i].player1.name}
-              player2={round1[i].player2.name}
-              players={`${round1[i].player1.id} ${round1[i].player2.id}`}
-              selected={this.selectHandler.bind(this)}
-            ></Pairings>
-          );
+        if (this.state.showResult) {
+          pairedList = players.map((el, id) => {
+            return (
+              <div key={el.id}>
+                <ListPlayers>
+                  {el.name} - {el.score}
+                </ListPlayers>
+              </div>
+            );
+          });
+          this.state.showResult = false;
+        } else {
+          for (var i = 0; i < round1.length; i++) {
+            pairedList.push(
+              <Pairings
+                key={`${round1[i].player1.id} ${round1[i].player2.id}`}
+                player1={round1[i].player1.name}
+                player2={round1[i].player2.name}
+                players={`${round1[i].player1.id} ${round1[i].player2.id}`}
+                selected={this.selectHandler.bind(this)}
+              ></Pairings>
+            );
+          }
         }
       }
     }
 
-    let listPlayers = this.state.players.map((el, ind) => {
+    listPlayers = players.map((el, ind) => {
       return (
         <div key={el.id}>
           <ListPlayers>
-            {el.name} {el.elo} {el.club}
+            {el.name} {el.elo} {el.club} {el.score}
           </ListPlayers>
         </div>
       );
@@ -201,33 +222,33 @@ class App extends Component {
 
         <div className='app-container'>
           <div className='item'>
+            <span class='addPlayers'> Add Players</span>
             <Form submit={e => this.submitHandler(e)}></Form>
           </div>
 
           <div id='listOfGames' className='item listGames'>
-            <span>Complete List of Round Pairings </span>
-            <br />
+            <span className='listPairs'> Complete List of Round Pairings </span>
+            <p>
+              <span className='listPairs'>
+                Current Round {this.state.counter}
+              </span>
+            </p>
             {pairedList}
-            <button
-              className='submitResults'
-              onClick={this.roundResultHandler.bind(this)}
-              type='button'
-            >
-              Submit Results
-            </button>
           </div>
 
-          <div className='item'> {listPlayers} </div>
+          <div className='item'>
+            <span className='listPlayers'>List of Players</span> {listPlayers}
+          </div>
 
           <div className='item lowerHalf'>
-            <div>
+            {/* <div>
               <h2>Lower Half Section</h2>{' '}
-            </div>
+            </div> */}
 
             <div>
               {' '}
               <button
-                className='Button'
+                className='pairButton'
                 id='pairButton'
                 onClick={this.pairedHandler.bind(this)}
                 type='button'
@@ -236,6 +257,21 @@ class App extends Component {
                 Pair Players
               </button>
             </div>
+            <button
+              className='submitButton'
+              onClick={this.roundResultHandler.bind(this)}
+              type='button'
+            >
+              Submit Results
+            </button>
+
+            <button
+              className='showResultButton'
+              onClick={this.showResultHandler.bind(this)}
+              type='button'
+            >
+              Show Results
+            </button>
           </div>
         </div>
       </div>

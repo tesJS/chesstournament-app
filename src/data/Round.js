@@ -11,6 +11,10 @@ class Round {
     });
   }
 
+  getPlayers() {
+    return this.totalPlayers(this.listOfPlayers).sortPlayersByScore();
+  }
+
   createAllGames(players) {
     let noPlayers = players.length;
     let allGames = [];
@@ -100,30 +104,30 @@ class Round {
       singlePlayer,
       oddPlayersList,
       evenPlayersList,
-      shufflePlayers: function (plList) {
+      shufflePlayers: function () {
         return [
-          ...plList.sort(function (pl1, pl2) {
+          ...playersList.sort(function (pl1, pl2) {
             return Math.random() - 0.5;
           }),
         ];
       },
-      sortPlayersByElo: function (plList) {
+      sortPlayersByElo: function () {
         return [
-          ...plList.sort(function (pl1, pl2) {
+          ...playersList.sort(function (pl1, pl2) {
             return pl2.elo - pl1.elo;
           }),
         ];
       },
-      sortPlayersByScore: function (plList) {
+      sortPlayersByScore: function () {
         return [
-          ...plList.sort(function (pl1, pl2) {
+          ...playersList.sort(function (pl1, pl2) {
             return pl2.score - pl1.score;
           }),
         ];
       },
-      sortPlayersByWhiteTurns: function (plList) {
+      sortPlayersByWhiteTurns: function () {
         return [
-          ...plList.sort(function (pl1, pl2) {
+          ...playersList.sort(function (pl1, pl2) {
             return pl2.whiteTurns - pl1.whiteTurns;
           }),
         ];
@@ -180,6 +184,11 @@ class Round {
     allGames = this.createAllGames(players);
     //pair players for  round 1
     if (this.roundNo === 1) {
+      players.forEach(el => {
+        el.oppList = [];
+        el.score = 0;
+        el.whiteTurns = 0;
+      });
       sortPlayersByElo(players);
 
       for (i = 0; i <= noPlayers - 2; i++) {
@@ -191,6 +200,7 @@ class Round {
             return el.player1.id == player1.id && el.player2.id == player2.id;
           });
           game = game[0];
+          game.player1.setOpponentList(player2);
 
           roundGames.push(game);
           mid++;
@@ -229,9 +239,8 @@ class Round {
             } else {
               shufflePlayers(players);
             }
-
+            playerGames = this.filterGames(allGames, players[j], players);
             if (playerGames !== null) {
-              playerGames = this.filterGames(allGames, players[j], players);
               if (playerGames.length > 0) {
                 pairedPlayers.push(playerGames[0].player1);
                 pairedPlayers.push(playerGames[0].player2);
@@ -258,6 +267,9 @@ class Round {
         );
 
         if (roundGames.length == gamesPerRound) {
+          roundGames.forEach(el => {
+            el.player1.setOpponentList(el.player2);
+          });
           isNotPaired = false;
         } else if (counter < 10) {
           roundGames = [];

@@ -26,6 +26,7 @@ export default class Player {
   }
   setOpponentList(opp) {
     this.oppList.push(opp);
+    opp.oppList.push(this);
   }
   getOpponentList() {
     return this.oppList;

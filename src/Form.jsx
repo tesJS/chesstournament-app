@@ -1,15 +1,7 @@
 import React from 'react';
 import './Form.css';
-import styled from 'styled-components';
 
 const Form = props => {
-  const StyledInput = styled.input`
-    width: auto;
-    background-color: blue;
-    color: white;
-    right: 0px;
-    padding: 5px;
-  `;
   let DOMstrings = {
     inputName: '#name',
     inputElo: '#eloRating',
@@ -42,7 +34,7 @@ const Form = props => {
         />
         <br />
 
-        <StyledInput type='submit' name='Submit' />
+        <input className='submitButon' type='submit' name='Submit' />
 
         <br />
       </form>
