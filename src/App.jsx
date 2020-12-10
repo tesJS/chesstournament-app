@@ -133,6 +133,7 @@ class App extends Component {
 
     switch (result) {
       case 'win':
+        console.log('set white win pressed');
         player1[0].setWhiteTurns();
         player1[0].setScore(1);
         break;
@@ -159,6 +160,12 @@ class App extends Component {
   }
 
   render() {
+    /* if (this.state.counter === 1) {
+      players.forEach(el => {
+        el.oppList = [];
+        el.score = 0;
+        el.whiteTurns = 0;
+      }); */
     console.log('The state: ', this.state);
 
     let pairedList = [],
@@ -169,11 +176,13 @@ class App extends Component {
         this.state.currentRoundGames
       ),
       round1,
-      listPlayers,
-      showPlayersList = [];
+      listPlayers;
+
+    players = round.getPlayers();
 
     round1 = round.generateRoundGames();
-    players = round.getPlayers();
+
+    console.log('Round object', round);
 
     if (this.state.showPlayersList) {
       if (round1 != null) {
@@ -219,7 +228,6 @@ class App extends Component {
     return (
       <div className='App'>
         <h2>Chess Tournament Software</h2>
-
         <div className='app-container'>
           <div className='item'>
             <span class='addPlayers'> Add Players</span>

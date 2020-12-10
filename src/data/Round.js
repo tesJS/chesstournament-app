@@ -183,12 +183,7 @@ class Round {
     }
     allGames = this.createAllGames(players);
     //pair players for  round 1
-    if (this.roundNo === 1) {
-      players.forEach(el => {
-        el.oppList = [];
-        el.score = 0;
-        el.whiteTurns = 0;
-      });
+    if (this.roundNo == 1) {
       sortPlayersByElo(players);
 
       for (i = 0; i <= noPlayers - 2; i++) {
