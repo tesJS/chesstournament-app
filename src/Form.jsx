@@ -2,12 +2,6 @@ import React from 'react';
 import './Form.css';
 
 const Form = props => {
-  let DOMstrings = {
-    inputName: '#name',
-    inputElo: '#eloRating',
-    inputClub: '#club',
-  };
-
   return (
     <div className='form-container'>
       <form onSubmit={props.submit}>

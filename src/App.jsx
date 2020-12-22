@@ -32,9 +32,14 @@ class App extends Component {
         new Player('H', 2310, 'Italian Chess Federation'),
       ], */
       counter: 0,
+      finalRound: false,
       showResult: false,
       showPlayersList: false,
       currentRoundGames: [],
+      pairButtonClicked: false,
+      showResultButtonClicked: false,
+      submitResultButtonClicked: false,
+      resetButtonClicked: false,
     };
 
     this.state.players.forEach(el => {
@@ -77,13 +82,13 @@ class App extends Component {
   pairedHandler() {
     let newState = { ...this.state };
 
-    if (!this.state.showPlayersList) {
-      /* newState.pairButton = true;
-      newState.resultButton = false; */
-      newState.showPlayersList = true;
+    if (!newState.pairButtonClicked) {
+      this.setStatus(newState);
+      newState.pairButtonClicked = true;
       newState.counter++;
+      console.log('The state from pairHandler', newState);
       this.setState(newState);
-    }
+    } else alert('Enter round results or reset the tournament!');
   }
   //select option handler
   selectHandler(e) {
@@ -100,6 +105,12 @@ class App extends Component {
     if (searchIndex >= 0) this.storeResults.splice(searchIndex, 1);
     if (result !== 'default') this.storeResults.push({ id: str, result });
   }
+  setStatus(newState) {
+    newState.resetButtonClicked = false;
+    newState.showResultButtonClicked = false;
+    newState.submitResultButtonClicked = false;
+    newState.pairButtonClicked = false;
+  }
   //Submit Results Button after the round games list - to enter the round games result
   roundResultHandler(e) {
     let newState = { ...this.state };
@@ -110,9 +121,11 @@ class App extends Component {
       this.storeResults.forEach(el => {
         this.selectProsessor(el);
       });
-      newState.showPlayersList = false;
-      this.setState(newState);
+      this.setStatus(newState);
+      newState.submitResultButtonClicked = true;
       this.storeResults = [];
+      console.log('The state from roundResultHandler', newState);
+      this.setState(newState);
     } else {
       window.alert("Enter all games' results!");
     }
@@ -133,7 +146,6 @@ class App extends Component {
 
     switch (result) {
       case 'win':
-        console.log('set white win pressed');
         player1[0].setWhiteTurns();
         player1[0].setScore(1);
         break;
@@ -151,23 +163,32 @@ class App extends Component {
 
   showResultHandler() {
     let newState = { ...this.state };
-    console.log('Show Result button clicked!');
-    if (!this.state.showPlayersList) {
-      newState.showPlayersList = true;
-      newState.showResult = true;
+    if (!newState.pairButtonClicked || newState.finalRound) {
+      this.setStatus(newState);
+      newState.showResultButtonClicked = true;
+      console.log('The state from showResultButton', newState);
       this.setState(newState);
-    }
+    } else alert('Enter round results or reset the tournament!');
+  }
+  resetHandler() {
+    let newState = { ...this.state };
+    newState.counter = 0;
+    newState.players = [
+      new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'),
+      new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
+      new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
+      new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
+      new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'),
+      new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'),
+    ];
+    this.setStatus(newState);
+    newState.resetButtonClicked = true;
+    newState.currentRoundGames = [];
+    console.log('The state from resetHandler', newState);
+    this.setState(newState);
   }
 
   render() {
-    /* if (this.state.counter === 1) {
-      players.forEach(el => {
-        el.oppList = [];
-        el.score = 0;
-        el.whiteTurns = 0;
-      }); */
-    console.log('The state: ', this.state);
-
     let pairedList = [],
       players,
       round = new Round(
@@ -177,42 +198,42 @@ class App extends Component {
       ),
       round1,
       listPlayers;
+    let round2 = new Round(this.state.players, 1, null);
 
-    players = round.getPlayers();
+    players = round2.getPlayers();
 
-    round1 = round.generateRoundGames();
-
-    console.log('Round object', round);
-
-    if (this.state.showPlayersList) {
+    if (this.state.pairButtonClicked) {
+      round1 = round.generateRoundGames();
       if (round1 != null) {
         this.state.currentRoundGames.push(round1);
-
-        if (this.state.showResult) {
-          pairedList = players.map((el, id) => {
-            return (
-              <div key={el.id}>
-                <ListPlayers>
-                  {el.name} - {el.score}
-                </ListPlayers>
-              </div>
-            );
-          });
-          this.state.showResult = false;
-        } else {
-          for (var i = 0; i < round1.length; i++) {
-            pairedList.push(
-              <Pairings
-                key={`${round1[i].player1.id} ${round1[i].player2.id}`}
-                player1={round1[i].player1.name}
-                player2={round1[i].player2.name}
-                players={`${round1[i].player1.id} ${round1[i].player2.id}`}
-                selected={this.selectHandler.bind(this)}
-              ></Pairings>
-            );
-          }
+        for (var i = 0; i < round1.length; i++) {
+          pairedList.push(
+            <Pairings
+              key={`${round1[i].player1.id} ${round1[i].player2.id}`}
+              player1={round1[i].player1.name}
+              player2={round1[i].player2.name}
+              players={`${round1[i].player1.id} ${round1[i].player2.id}`}
+              selected={this.selectHandler.bind(this)}
+            ></Pairings>
+          );
         }
+      } else {
+        this.state.counter--;
+        this.state.finalRound = true;
+        alert(
+          'Maximum Round Reached!!! \n Press Show Button to see full standings!'
+        );
       }
+    } else if (this.state.showResultButtonClicked) {
+      pairedList = players.map((el, id) => {
+        return (
+          <div key={el.id}>
+            <ListPlayers>
+              {el.name} - {el.score}
+            </ListPlayers>
+          </div>
+        );
+      });
     }
 
     listPlayers = players.map((el, ind) => {
@@ -227,15 +248,18 @@ class App extends Component {
 
     return (
       <div className='App'>
-        <h2>Chess Tournament Software</h2>
+        <h2> Chess Tournament Software </h2>
         <div className='app-container'>
           <div className='item'>
-            <span class='addPlayers'> Add Players</span>
+            <span> Add Players</span>
             <Form submit={e => this.submitHandler(e)}></Form>
           </div>
 
           <div id='listOfGames' className='item listGames'>
-            <span className='listPairs'> Complete List of Round Pairings </span>
+            <span className='listPairs'>
+              {' '}
+              <span>Complete List of Round Pairings</span>{' '}
+            </span>
             <p>
               <span className='listPairs'>
                 Current Round {this.state.counter}
@@ -245,14 +269,10 @@ class App extends Component {
           </div>
 
           <div className='item'>
-            <span className='listPlayers'>List of Players</span> {listPlayers}
+            <span>List of Players</span> {listPlayers}
           </div>
 
           <div className='item lowerHalf'>
-            {/* <div>
-              <h2>Lower Half Section</h2>{' '}
-            </div> */}
-
             <div>
               {' '}
               <button
@@ -279,6 +299,13 @@ class App extends Component {
               type='button'
             >
               Show Results
+            </button>
+            <button
+              className='resetButton'
+              onClick={this.resetHandler.bind(this)}
+              type='button'
+            >
+              Reset
             </button>
           </div>
         </div>

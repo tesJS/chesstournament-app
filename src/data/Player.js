@@ -1,15 +1,14 @@
 import uniqid from 'uniqid';
 
 export default class Player {
-  oppList = [];
-  id = '';
-  elo = '';
-  score = 0;
-  whiteTurns = 0;
   constructor(name, elo, club) {
     this.name = name;
     this.elo = elo;
     this.club = club;
+    this.oppList = [];
+    this.id = '';
+    this.score = 0;
+    this.whiteTurns = 0;
   }
   getScore() {
     return this.score;
@@ -21,7 +20,7 @@ export default class Player {
     return this.id;
   }
   setId() {
-    var uniqid = require('uniqid');
+    //var uniqid = require('uniqid');
     this.id = uniqid();
   }
   setOpponentList(opp) {

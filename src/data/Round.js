@@ -12,7 +12,7 @@ class Round {
   }
 
   getPlayers() {
-    return this.totalPlayers(this.listOfPlayers).sortPlayersByScore();
+    return this.sortPlayers().sortPlayersByScore(this.listOfPlayers);
   }
 
   createAllGames(players) {
@@ -89,6 +89,39 @@ class Round {
     return game;
   }
 
+  sortPlayers() {
+    return {
+      shufflePlayers: function (playersList) {
+        return [
+          ...playersList.sort(function (pl1, pl2) {
+            return Math.random() - 0.5;
+          }),
+        ];
+      },
+      sortPlayersByElo: function (playersList) {
+        return [
+          ...playersList.sort(function (pl1, pl2) {
+            return pl2.elo - pl1.elo;
+          }),
+        ];
+      },
+      sortPlayersByScore: function (playersList) {
+        return [
+          ...playersList.sort(function (pl1, pl2) {
+            return pl2.score - pl1.score;
+          }),
+        ];
+      },
+      sortPlayersByWhiteTurns: function (playersList) {
+        return [
+          ...playersList.sort(function (pl1, pl2) {
+            return pl2.whiteTurns - pl1.whiteTurns;
+          }),
+        ];
+      },
+    };
+  }
+
   totalPlayers(playersList) {
     let singlePlayer = false;
     let oddPlayersList = false;
@@ -104,42 +137,15 @@ class Round {
       singlePlayer,
       oddPlayersList,
       evenPlayersList,
-      shufflePlayers: function () {
-        return [
-          ...playersList.sort(function (pl1, pl2) {
-            return Math.random() - 0.5;
-          }),
-        ];
-      },
-      sortPlayersByElo: function () {
-        return [
-          ...playersList.sort(function (pl1, pl2) {
-            return pl2.elo - pl1.elo;
-          }),
-        ];
-      },
-      sortPlayersByScore: function () {
-        return [
-          ...playersList.sort(function (pl1, pl2) {
-            return pl2.score - pl1.score;
-          }),
-        ];
-      },
-      sortPlayersByWhiteTurns: function () {
-        return [
-          ...playersList.sort(function (pl1, pl2) {
-            return pl2.whiteTurns - pl1.whiteTurns;
-          }),
-        ];
-      },
     };
   }
-
   generateRoundGames() {
     let player1,
       player2,
       playerGames,
-      newPlayers,
+      players1 = [],
+      players2 = [],
+      storeRoundGames = [],
       game,
       pairedPlayers = [],
       unpairedPlayers = [],
@@ -158,14 +164,14 @@ class Round {
       counter = 0;
     let mid = noPlayers / 2;
     let gamesPerRound;
+    const { singlePlayer, oddPlayersList, evenPlayersList } = this.totalPlayers(
+      players
+    );
     const {
-      singlePlayer,
-      oddPlayersList,
-      evenPlayersList,
       sortPlayersByElo,
       sortPlayersByScore,
       shufflePlayers,
-    } = this.totalPlayers(players);
+    } = this.sortPlayers();
 
     if (singlePlayer) console.log('Need atleast 2 players to play a round!!!');
     //sort players according to elo for first round
@@ -232,9 +238,12 @@ class Round {
             if (counter === 1) {
               sortPlayersByScore(players);
             } else {
-              shufflePlayers(players);
+              players1 = [...players];
+
+              players = shufflePlayers(players);
+              players2 = [...players];
             }
-            playerGames = this.filterGames(allGames, players[j], players);
+            playerGames = this.filterGames(allGames, players[0], players);
             if (playerGames !== null) {
               if (playerGames.length > 0) {
                 pairedPlayers.push(playerGames[0].player1);
@@ -255,11 +264,6 @@ class Round {
             players = totalUnpairedPlayers;
           }
         } // end of for loop
-        console.log('The Round Games after for loop:- ', roundGames);
-
-        console.log(
-          '*********************************************************************************'
-        );
 
         if (roundGames.length == gamesPerRound) {
           roundGames.forEach(el => {
@@ -273,10 +277,6 @@ class Round {
           unpairedPlayers = [];
           totalUnpairedPlayers = [];
         } else if (counter > 10) {
-          console.log('The Round Games after counter>10 :- ', roundGames);
-          console.log(
-            '*********************************************************************************'
-          );
           pairDisorder = true;
           isNotPaired = false;
         }

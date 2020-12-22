@@ -5,28 +5,28 @@
   margin: 10px;
   border: 2px solid red;
 }
-
-.submitButton {
+span {
+  font-size: large;
+  font-weight: bold;
+  text-decoration: underline;
+  color: rgb(71, 69, 69);
+}
+.submitButton,
+.pairButton,
+.showResultButton,
+.resetButton {
   border-radius: 12px;
   width: 250px;
   height: 100px;
-  background-color: rgb(202, 17, 147);
-  color: rgb(14, 13, 13);
+  background-color: blue;
+  color: rgb(198, 198, 202);
   margin-right: 30px;
   margin-left: 30px;
   padding: 5px;
   font-size: large;
 }
-.pairButton {
-  border-radius: 12px;
-  width: 250px;
-  height: 100px;
-  background-color: rgb(138, 146, 20);
-  color: rgb(14, 13, 13);
-  margin-right: 30px;
-  margin-left: 250px;
-  padding: 5px;
-  font-size: large;
+.resetButton {
+  background-color: rgba(255, 0, 0, 1);
 }
 
 .lowerHalf {
@@ -38,33 +38,4 @@
 
 .item {
   margin: 10px;
-}
-
-.listPairs {
-  background-color: rgb(202, 17, 147);
-  font-size: large;
-  font-weight: bold;
-}
-.listPlayers {
-  background-color: rgb(8, 151, 91);
-  font-size: large;
-  font-weight: bold;
-}
-
-.addPlayers {
-  background-color: dodgerblue;
-  font-size: large;
-  font-weight: bold;
-}
-
-.showResultButton {
-  border-radius: 12px;
-  width: 250px;
-  height: 100px;
-  background-color: rgb(36, 23, 116);
-  color: rgb(20, 2, 3);
-  margin-right: 30px;
-  margin-left: 30px;
-  padding: 5px;
-  font-size: large;
 }
