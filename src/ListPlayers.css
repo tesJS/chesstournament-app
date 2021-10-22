@@ -3,6 +3,6 @@
   grid-template-columns: auto;
   grid-gap: 5px;
   grid-auto-rows: auto;
-  background-color: rgb(200, 205, 219);
+  background-color:  rgb(200, 205, 219); 
   margin: 10px;
 }

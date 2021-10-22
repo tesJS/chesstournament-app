@@ -1,27 +1,31 @@
 import React, { Component } from 'react';
+import {BrowserRouter as Router,Link,Switch,Route} from 'react-router-dom'
 import './App.css';
 import Form from './Form';
 import ListPlayers from './ListOfPlayers';
 import Pairings from './Pairings';
-
+import PlayerService from './data/PlayerService';
 import Player from './data/Player';
 import Round from './data/Round';
-
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      players: [
-        new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'),
+ /* new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'),
         new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
         new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
         new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
         new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'),
-        new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'),
+        new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'), */
         /* new Player('Kiros Alemayehu', 1500, 'Tigray Chess Federation'),
         new Player('Hagos Berhe', 1700, 'Tigray Chess Federation'), */
-      ],
-      /*  players: [
+
+         /* let players=[];
+players.push(new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'));
+players.push(new Player('Garry Kasparov', 2854, 'St Lous Chess Club'));
+players.push(new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'));
+players.push(new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'));
+players.push(new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'));
+players.push( new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'));
+for(let i=0;i<players.length;i++)    
+PlayerService.postPlayer(players[i]); */
+/*  players: [
         new Player('A', 1985, 'Helsingin Shakki Klubbi'),
         new Player('B', 2854, 'St Lous Chess Club'),
         new Player('C', 2809, 'Russian Federation Chess'),
@@ -31,6 +35,13 @@ class App extends Component {
         new Player('G', 2200, 'British Chess Federation'),
         new Player('H', 2310, 'Italian Chess Federation'),
       ], */
+
+
+class App extends Component {
+  constructor(props) {
+    super(props);    
+    this.state = {
+      players: [],      
       counter: 0,
       finalRound: false,
       showResult: false,
@@ -41,10 +52,10 @@ class App extends Component {
       submitResultButtonClicked: false,
       resetButtonClicked: false,
     };
-
-    this.state.players.forEach(el => {
+   
+    /* this.state.players.forEach(el => {
       el.setId();
-    });
+    }); */
   }
 
   storeResults = [];
@@ -54,8 +65,27 @@ class App extends Component {
     inputClub: '#club',
   };
 
+
+  componentDidMount(){
+    PlayerService.getPlayers().then((response) => {
+      let newState = { ...this.state };
+      let players=[];
+      
+      for(let i=0;i<response.length;i++) {   
+      players.push(new Player(response[i].name,response[i].elo,response[i].club))
+      players[i].id=response[i].id;
+        }
+        newState.players=players;
+      console.log("From ComponentDidMount oldState:- ",this.state);
+      console.log("From ComponentDidMount newState:- ",newState);
+      this.setState(newState);
+     
+    });
+}
+
   submitHandler(event) {
     event.preventDefault();
+   
 
     let newState = { ...this.state };
 
@@ -64,7 +94,8 @@ class App extends Component {
     let inputClub = document.querySelector(this.DOMstrings.inputClub);
 
     let player = new Player(inputName.value, inputElo.value, inputClub.value);
-    player.setId();
+    PlayerService.postPlayer(player); // save it to database 
+    //player.setId();
 
     if (inputName.value !== '' && inputElo.value !== '') {
       newState.players.push(player);
@@ -82,8 +113,7 @@ class App extends Component {
   pairedHandler() {
     let newState = { ...this.state };
 
-    if (!newState.pairButtonClicked) {
-      this.setStatus(newState);
+    if (!newState.pairButtonClicked) {      
       newState.pairButtonClicked = true;
       newState.counter++;
       console.log('The state from pairHandler', newState);
