@@ -1,22 +1,46 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router,Link,Switch,Route} from 'react-router-dom'
+import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom'
 import './App.css';
-import Form from './Form';
 import ListPlayers from './ListOfPlayers';
 import Pairings from './Pairings';
 import PlayerService from './data/PlayerService';
 import Player from './data/Player';
 import Round from './data/Round';
- /* new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'),
-        new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
-        new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
-        new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
-        new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'),
-        new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'), */
-        /* new Player('Kiros Alemayehu', 1500, 'Tigray Chess Federation'),
-        new Player('Hagos Berhe', 1700, 'Tigray Chess Federation'), */
+import TourForm from './TournamentForm';
+import AddPlayerSection from './AddPlayerSection';
+import PairingListSection from './PairingListSection';
+import Home from './Home';
+/* 
 
-         /* let players=[];
+     newState.players = [
+     new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'),
+     new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
+     new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
+     new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
+     new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'),
+     new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'),
+   ];
+
+
+[ {"id":1,"name":"Anatoly Karpov","elo":"2678","club":"USSR Chess Federation"},
+  
+,
+  {"id":3,"name":"Solomon Assefa","elo":"2340","club":"Ethiopian Chess Federation"},
+  { "id":4,"name":"Leykun Assefa","elo":"2340","club":"Ethiopian Chess Federation"},
+  {"id":5,"name":"Yimam","elo":"2078","club":"Ethiopian Chess Federation"},
+  { "id":6,"name":"Kramnik","elo":"2340","club":"USSR Chess Federation"}
+]
+ 
+new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'),
+       new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
+       new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
+       new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
+       new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'),
+       new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'), */
+/* new Player('Kiros Alemayehu', 1500, 'Tigray Chess Federation'),
+new Player('Hagos Berhe', 1700, 'Tigray Chess Federation'), */
+
+/* let players=[];
 players.push(new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'));
 players.push(new Player('Garry Kasparov', 2854, 'St Lous Chess Club'));
 players.push(new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'));
@@ -25,6 +49,8 @@ players.push(new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'));
 players.push( new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'));
 for(let i=0;i<players.length;i++)    
 PlayerService.postPlayer(players[i]); */
+
+
 /*  players: [
         new Player('A', 1985, 'Helsingin Shakki Klubbi'),
         new Player('B', 2854, 'St Lous Chess Club'),
@@ -39,9 +65,9 @@ PlayerService.postPlayer(players[i]); */
 
 class App extends Component {
   constructor(props) {
-    super(props);    
+    super(props);
     this.state = {
-      players: [],      
+      players: [],
       counter: 0,
       finalRound: false,
       showResult: false,
@@ -52,7 +78,7 @@ class App extends Component {
       submitResultButtonClicked: false,
       resetButtonClicked: false,
     };
-   
+    console.log('Constructor:- ',document);
     /* this.state.players.forEach(el => {
       el.setId();
     }); */
@@ -66,28 +92,35 @@ class App extends Component {
   };
 
 
-  componentDidMount(){
+  componentDidMount() {
+
     PlayerService.getPlayers().then((response) => {
       let newState = { ...this.state };
-      let players=[];
-      
-      for(let i=0;i<response.length;i++) {   
-      players.push(new Player(response[i].name,response[i].elo,response[i].club))
-      players[i].id=response[i].id;
-        }
-        newState.players=players;
-      console.log("From ComponentDidMount oldState:- ",this.state);
-      console.log("From ComponentDidMount newState:- ",newState);
-      this.setState(newState);
-     
-    });
-}
+      let players = [];
 
-  submitHandler(event) {
+      for (let i = 0; i < response.length; i++) {
+        players.push(new Player(response[i].name, response[i].elo, response[i].club))
+        players[i].id = response[i].id;
+      }
+      newState.players = players;
+      console.log("From ComponentDidMount oldState:- ", this.state);
+      console.log("From ComponentDidMount newState:- ", newState);
+      this.setState(newState);
+
+    });
+  }
+
+
+  submitTourHandler() {
+
+  }
+  submitPlayerHandler(event) {
     event.preventDefault();
-   
+
+    
 
     let newState = { ...this.state };
+
 
     let inputName = document.querySelector(this.DOMstrings.inputName);
     let inputElo = document.querySelector(this.DOMstrings.inputElo);
@@ -113,7 +146,7 @@ class App extends Component {
   pairedHandler() {
     let newState = { ...this.state };
 
-    if (!newState.pairButtonClicked) {      
+    if (!newState.pairButtonClicked) {
       newState.pairButtonClicked = true;
       newState.counter++;
       console.log('The state from pairHandler', newState);
@@ -194,7 +227,7 @@ class App extends Component {
   showResultHandler() {
     let newState = { ...this.state };
     if (!newState.pairButtonClicked || newState.finalRound) {
-      this.setStatus(newState);
+
       newState.showResultButtonClicked = true;
       console.log('The state from showResultButton', newState);
       this.setState(newState);
@@ -202,36 +235,38 @@ class App extends Component {
   }
   resetHandler() {
     let newState = { ...this.state };
+    
     newState.counter = 0;
-    newState.players = [
-      new Player('Tesfaye Asfaw', 1985, 'Helsingin Shakki Klubbi'),
-      new Player('Garry Kasparov', 2854, 'St Lous Chess Club'),
-      new Player('Vladmir Kramnik', 2809, 'Russian Federation Chess'),
-      new Player('Elleni Nega', 1678, 'Ethiopian Chess Federation'),
-      new Player('Solomon Assefa', 2178, 'Ethiopian Chess Federation'),
-      new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'),
-    ];
-    this.setStatus(newState);
     newState.resetButtonClicked = true;
     newState.currentRoundGames = [];
+    newState.players.forEach((el) => {
+      el.score = 0;
+    });
     console.log('The state from resetHandler', newState);
     this.setState(newState);
   }
 
   render() {
-    let pairedList = [],
-      players,
+    let pairedList = [], players,
       round = new Round(
         this.state.players,
         this.state.counter,
         this.state.currentRoundGames
       ),
       round1,
-      listPlayers;
-    let round2 = new Round(this.state.players, 1, null);
+      round2 = new Round(this.state.players, 1, null);
 
-    players = round2.getPlayers();
+      players = round2.getPlayers();
 
+    let listPlayers = players.map((el, ind) => {
+      return (
+        <div key={el.id}>
+
+          {el.name} {el.elo} {el.club} {el.score}
+
+        </div>
+      );
+    });
     if (this.state.pairButtonClicked) {
       round1 = round.generateRoundGames();
       if (round1 != null) {
@@ -257,90 +292,66 @@ class App extends Component {
     } else if (this.state.showResultButtonClicked) {
       pairedList = players.map((el, id) => {
         return (
-          <div key={el.id}>
-            <ListPlayers>
-              {el.name} - {el.score}
-            </ListPlayers>
+          <div className="playersList" key={el.id}>
+
+            {el.name} - {el.score}
+
           </div>
         );
       });
     }
+    
 
-    listPlayers = players.map((el, ind) => {
-      return (
-        <div key={el.id}>
-          <ListPlayers>
-            {el.name} {el.elo} {el.club} {el.score}
-          </ListPlayers>
-        </div>
-      );
-    });
 
     return (
-      <div className='App'>
-        <h2> Chess Tournament Software </h2>
-        <div className='app-container'>
-          <div className='item'>
-            <span> Add Players</span>
-            <Form submit={e => this.submitHandler(e)}></Form>
+      <div className="App">
+        <Router>
+
+          <div className="header items">
+
+            <h2> Chess Tournament Software </h2>
+            <ul className="App-header">
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/tour">Tournament Form</Link>
+              </li>
+              <li>
+                <Link to="/add">Add</Link>
+              </li>
+              <li>
+                <Link to="/contact">Contact Us</Link>
+              </li>
+            </ul>
+
+
           </div>
 
-          <div id='listOfGames' className='item listGames'>
-            <span className='listPairs'>
-              {' '}
-              <span>Complete List of Round Pairings</span>{' '}
-            </span>
-            <p>
-              <span className='listPairs'>
-                Current Round {this.state.counter}
-              </span>
-            </p>
-            {pairedList}
+          <div className="body items">
+
+            <Switch>
+
+              <Route exact path="/" render={(props) =>
+                <Home {...props}
+                  listOfPlayers={listPlayers} pairedHandler={this.pairedHandler.bind(this)} resetHandler={this.resetHandler.bind(this)}
+                  counter={this.state.counter} roundResultHandler={this.roundResultHandler.bind(this)}
+                  pairedList={pairedList} showResultHandler={this.showResultHandler.bind(this)}
+                />} />
+              <Route exact path="/add"
+                render={(props) => <AddPlayerSection {...props} submit={this.submitPlayerHandler.bind(this)} />} />
+
+              <Route exact path="/tour" exact render={(props) => <TourForm {...props} submit={this.submitTourHandler} />} />
+
+            </Switch>
           </div>
 
-          <div className='item'>
-            <span>List of Players</span> {listPlayers}
-          </div>
 
-          <div className='item lowerHalf'>
-            <div>
-              {' '}
-              <button
-                className='pairButton'
-                id='pairButton'
-                onClick={this.pairedHandler.bind(this)}
-                type='button'
-                value='Pair players'
-              >
-                Pair Players
-              </button>
-            </div>
-            <button
-              className='submitButton'
-              onClick={this.roundResultHandler.bind(this)}
-              type='button'
-            >
-              Submit Results
-            </button>
 
-            <button
-              className='showResultButton'
-              onClick={this.showResultHandler.bind(this)}
-              type='button'
-            >
-              Show Results
-            </button>
-            <button
-              className='resetButton'
-              onClick={this.resetHandler.bind(this)}
-              type='button'
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      </div>
+        </Router></div>
+
     );
+
   }
 }
 
