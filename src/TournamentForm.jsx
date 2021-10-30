@@ -4,6 +4,8 @@ import './tour-form.css';
 const TourForm = props => {
   return (
     <div className='form-container'>
+      <h3> Tournament Form</h3>
+
       <form onSubmit={props.post}>
         <label htmlFor='name'>Tournament Name*</label>
         <br />
@@ -35,7 +37,7 @@ const TourForm = props => {
           name='rounds'
           placeholder='Total number of rounds...'
         />
-        <br/>
+        <br />
 
         <input className='postButton' type='submit' name='Submit' />
 

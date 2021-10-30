@@ -3,11 +3,9 @@ import './Add-player-form.css';
 
 const AddPlayerSection = props => {
   return (
-    
-      <div className='players-section'>
-            <span> Add Players</span>
-            
-          
+
+    <div className='players-section'>
+      <h3> Add Players</h3>
       <form onSubmit={props.submit}>
         <label htmlFor='name'>Name*</label>
         <br />
@@ -37,7 +35,7 @@ const AddPlayerSection = props => {
         <br />
       </form>
     </div>
-    
+
   );
 };
 export default AddPlayerSection;

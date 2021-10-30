@@ -14,5 +14,7 @@
     text-decoration: underline;
     color: rgb(71, 69, 69);
   }
-  
+  label{
+    font-weight: bold;
+  }
   
