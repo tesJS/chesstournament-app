@@ -4,9 +4,13 @@ const PLAYERS_REST_API_URL = 'http://localhost:8080/player';
 
 class PlayerService {
 
-     postPlayer(player){
+    constructor(){
         
-        axios.post(PLAYERS_REST_API_URL+'/add', player);
+    }
+     async postPlayer(player){
+        
+       const data= axios.post(PLAYERS_REST_API_URL+'/add', player);
+       return data;
           
     }
     

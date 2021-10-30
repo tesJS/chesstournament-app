@@ -1,5 +1,5 @@
 import React from 'react';
-import './add-player-form.css';
+import './Add-player-form.css';
 
 const AddPlayerSection = props => {
   return (
