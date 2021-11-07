@@ -5,11 +5,9 @@ class Round {
   constructor(listOfPlayers, roundNo, allGamesPlayed) {
     this.listOfPlayers = listOfPlayers;
     this.roundNo = roundNo;
-    this.allGamesPlayed = allGamesPlayed;
-    listOfPlayers.forEach(el => {
-      el.setId();
-    });
+    this.allGamesPlayed = allGamesPlayed;    
   }
+
 
   getPlayers() {
     return this.sortPlayers().sortPlayersByScore(this.listOfPlayers);
@@ -77,7 +75,7 @@ class Round {
         o1EloDiff = Math.abs(o1.player2.elo - o1.player1.elo);
         o2ScoreDiff = Math.abs(o2.player2.score - o2.player1.score);
         o2EloDiff = Math.abs(o2.player2.elo - o2.player1.elo);
-        if (o1ScoreDiff == o2ScoreDiff) return o1EloDiff - o2EloDiff;
+        if (o1ScoreDiff === o2ScoreDiff) return o1EloDiff - o2EloDiff;
         else return o1ScoreDiff - o2ScoreDiff;
       });
       return sortedPlayerGames;
@@ -121,7 +119,7 @@ class Round {
       },
     };
   }
-
+//check if playersList is even odd or less than 2
   totalPlayers(playersList) {
     let singlePlayer = false;
     let oddPlayersList = false;
@@ -140,12 +138,9 @@ class Round {
     };
   }
   generateRoundGames() {
-    let player1,
-      player2,
-      playerGames,
-      players1 = [],
-      players2 = [],
-      storeRoundGames = [],
+    let player1,players1,
+      player2,players2,
+      playerGames,     
       game,
       pairedPlayers = [],
       unpairedPlayers = [],
@@ -159,9 +154,7 @@ class Round {
       allGames = [];
     let noPlayers = this.listOfPlayers.length;
     let players = [...this.listOfPlayers];
-    var i,
-      j,
-      counter = 0;
+    var i, counter = 0;
     let mid = noPlayers / 2;
     let gamesPerRound;
     const { singlePlayer, oddPlayersList, evenPlayersList } = this.totalPlayers(
@@ -189,7 +182,7 @@ class Round {
     }
     allGames = this.createAllGames(players);
     //pair players for  round 1
-    if (this.roundNo == 1) {
+    if (this.roundNo === 1) {
       sortPlayersByElo(players);
 
       for (i = 0; i <= noPlayers - 2; i++) {
@@ -255,7 +248,7 @@ class Round {
 
             unpairedPlayers = players.filter((elt, ind) => {
               return !pairedPlayers.some(el => {
-                return elt.id == el.id;
+                return elt.id === el.id;
               });
             });
 
@@ -265,7 +258,7 @@ class Round {
           }
         } // end of for loop
 
-        if (roundGames.length == gamesPerRound) {
+        if (roundGames.length === gamesPerRound) {
           roundGames.forEach(el => {
             el.player1.setOpponentList(el.player2);
           });
