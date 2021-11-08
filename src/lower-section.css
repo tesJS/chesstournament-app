@@ -12,7 +12,7 @@
 .showResultButton,
 .resetButton {
   border-radius: 12px;
-  width: 13rem;
+  width: 10rem;
   height: 100px;
   background-color: blue;
   color: rgb(198, 198, 202);
@@ -24,6 +24,6 @@
 .resetButton {
   background-color: rgba(255, 0, 0, 1);
 }
-.showSaveButton{
+.showSaveButton {
   background-color: rgb(9, 65, 46);
 }

@@ -1,7 +1,7 @@
 .container {
   display: grid;
   grid-template-columns: 60% 40%;
-  grid-template-rows: 3fr auto;
+  grid-template-rows: 350px auto;
   text-align: left;
   margin: 10px;
 
