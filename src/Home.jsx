@@ -2,7 +2,6 @@ import React from 'react';
 import './Home.css';
 import ListPlayers from './ListOfPlayers';
 import LowerSection from './LowerSection'
-import AddPlayerSection from './AddPlayerSection';
 import PairingListSection from './PairingListSection';
 
 function Home(props) {
@@ -30,7 +29,8 @@ function Home(props) {
                 pairButtonHandler={props.pairedHandler}
                 submitButtonHandler={props.roundResultHandler}
                 showResultHandler={props.showResultHandler}
-                resetHandler={props.resetHandler} />
+                resetHandler={props.resetHandler}
+                saveButtonHandler={props.saveButtonHandler} />
 
         </div>
     </div>);

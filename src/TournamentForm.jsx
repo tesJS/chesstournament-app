@@ -6,11 +6,7 @@ const TourForm = props => {
     <div className='form-container'>
       <h3> Tournament Form</h3>
 
-      <form onSubmit={props.post}>
-        <label htmlFor='name'>Tournament Name*</label>
-        <br />
-        <input type='text' id='name' name='Name' placeholder='Tournament name...' />
-        <br />
+      <form onSubmit={props.submitTourForm}>
         <label>Tournament Description*</label>
         <br />
         <input
@@ -20,15 +16,19 @@ const TourForm = props => {
           placeholder='Description..'
         />
         <br />
+
+
         <label>Number of Players</label>
         <br />
         <input
-          id='club'
+          id='noplayers'
           type='text'
           name='Club'
           placeholder='Total players number...'
         />
         <br />
+
+
         <label>Number of Rounds</label>
         <br />
         <input
@@ -36,6 +36,16 @@ const TourForm = props => {
           type='text'
           name='rounds'
           placeholder='Total number of rounds...'
+        />
+        <br />
+
+        <label>Tournament ID</label>
+        <br />
+        <input
+          id='tourid'
+          type='text'
+          name='tourid'
+          placeholder='Tournament ID...'
         />
         <br />
 

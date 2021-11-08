@@ -4,7 +4,7 @@ import './Pairings.css';
 
 const Pairings = props => {
   return (
-    //<div className='container1'>
+    
     <div
       className={props.players}
       style={{ border: '2px solid blue', margin: '10px' }}

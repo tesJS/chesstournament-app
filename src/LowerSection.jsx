@@ -32,6 +32,13 @@ const LowerSection=function (props) {
       Show Results
     </button>
     <button
+      className='showSaveButton'
+      onClick={props.saveButtonHandler}
+      type='button'
+    >
+      Save
+    </button>
+    <button
       className='resetButton'
       onClick={props.resetHandler}
       type='button'

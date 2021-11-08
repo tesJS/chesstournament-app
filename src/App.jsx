@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom'
 import './App.css';
-import ListPlayers from './ListOfPlayers';
 import Pairings from './Pairings';
 import PlayerService from './data/PlayerService';
 import Player from './data/Player';
 import Round from './data/Round';
 import TourForm from './TournamentForm';
 import AddPlayerSection from './AddPlayerSection';
-import PairingListSection from './PairingListSection';
 import Home from './Home';
+import Tournament from './data/Tournament';
+import TournamentResult from './data/TournamentResult';
+
 /* 
 
      newState.players = [
@@ -77,8 +78,9 @@ class App extends Component {
       showResultButtonClicked: false,
       submitResultButtonClicked: false,
       resetButtonClicked: false,
+      tournamentID: ""
     };
-    console.log('Constructor:- ',document);
+    console.log('Constructor:- ', document);
     /* this.state.players.forEach(el => {
       el.setId();
     }); */
@@ -110,14 +112,49 @@ class App extends Component {
     });
   }
 
+  //Save each players score to tournamentreults table in chesstourDB 
+  saveButtonHandler(players) {
+    let tourid = this.state.tournamentID;
+    let playerid;
+    if (tourid !== "") {
 
-  submitTourHandler() {
+      players.forEach((el) => {
+
+        playerid= parseInt(el.id);
+        PlayerService.postTournamentResult(new TournamentResult(playerid,tourid, el.score));
+
+      });
+    }
+  }
+
+
+  //Save tournament form data to Tournament table in chesstourDB 
+  submitTourHandler(event) {
+    event.preventDefault();
+    let newState = { ...this.state };
+    let tourdetails = document.querySelector('#tournamentDesc');
+    let noplayersField = document.querySelector("#noplayers");
+    let norounds = document.querySelector("#rounds");
+    let tourid = document.querySelector("#tourid");
+    let noplayers = parseInt(noplayersField.value);
+
+    PlayerService.postTournament(new Tournament(noplayers, tourdetails.value, norounds.value, tourid.value));
+
+
+    newState.tournamentID = tourid.value;// to link registering the tournamentresults table  to this tournament
+    tourdetails.value = '';
+    noplayersField.value = '';
+    norounds.value = '';
+    tourid.value = ''
+    
+    this.setState(newState)
+
 
   }
   submitPlayerHandler(event) {
     event.preventDefault();
 
-    
+
 
     let newState = { ...this.state };
 
@@ -146,6 +183,7 @@ class App extends Component {
   pairedHandler() {
     let newState = { ...this.state };
 
+    console.log("State returned after  TourFormHandler:- ", this.state);
     if (!newState.pairButtonClicked) {
       newState.pairButtonClicked = true;
       newState.counter++;
@@ -163,7 +201,7 @@ class App extends Component {
     obj.id = ids;
 
     let searchIndex = this.storeResults.findIndex(el => {
-      return el.id === str;
+      return el.id == str;
     });
     if (searchIndex >= 0) this.storeResults.splice(searchIndex, 1);
     if (result !== 'default') this.storeResults.push({ id: str, result });
@@ -196,15 +234,16 @@ class App extends Component {
 
   selectProsessor(obj) {
     let result = obj.result;
+
     let str = obj.id;
     let players = [...this.state.players];
     let ids = str.split(' ');
 
     let player1 = players.filter(el => {
-      return el.id === ids[0];
+      return el.id == ids[0];
     });
     let player2 = players.filter(el => {
-      return el.id === ids[1];
+      return el.id == ids[1];
     });
 
     switch (result) {
@@ -235,7 +274,7 @@ class App extends Component {
   }
   resetHandler() {
     let newState = { ...this.state };
-    
+
     newState.counter = 0;
     newState.resetButtonClicked = true;
     newState.currentRoundGames = [];
@@ -256,7 +295,7 @@ class App extends Component {
       round1,
       round2 = new Round(this.state.players, 1, null);
 
-      players = round2.getPlayers();
+    players = round2.getPlayers();
 
     let listPlayers = players.map((el, ind) => {
       return (
@@ -283,8 +322,10 @@ class App extends Component {
           );
         }
       } else {
-        this.state.counter--;
-        this.state.finalRound = true;
+        let newState = { ...this.state };
+        newState.counter--;
+        newState.finalRound = true;
+        this.setState(newState);
         alert(
           'Maximum Round Reached!!! \n Press Show Button to see full standings!'
         );
@@ -300,7 +341,7 @@ class App extends Component {
         );
       });
     }
-    
+
 
 
     return (
@@ -332,16 +373,24 @@ class App extends Component {
 
             <Switch>
 
-              <Route exact path="/" render={(props) =>
-                <Home {...props}
-                  listOfPlayers={listPlayers} pairedHandler={this.pairedHandler.bind(this)} resetHandler={this.resetHandler.bind(this)}
-                  counter={this.state.counter} roundResultHandler={this.roundResultHandler.bind(this)}
-                  pairedList={pairedList} showResultHandler={this.showResultHandler.bind(this)}
-                />} />
+              <Route
+                exact path="/"
+                render={(props) =>
+                  <Home {...props}
+                    listOfPlayers={listPlayers}
+                    pairedHandler={this.pairedHandler.bind(this)}
+                    resetHandler={this.resetHandler.bind(this)}
+                    counter={this.state.counter}
+                    roundResultHandler={this.roundResultHandler.bind(this)}
+                    pairedList={pairedList}
+                    showResultHandler={this.showResultHandler.bind(this)}
+                    saveButtonHandler={this.saveButtonHandler.bind(this, this.state.players)} />
+                }
+              />
               <Route exact path="/add"
                 render={(props) => <AddPlayerSection {...props} submit={this.submitPlayerHandler.bind(this)} />} />
 
-              <Route exact path="/tour" exact render={(props) => <TourForm {...props} submit={this.submitTourHandler} />} />
+              <Route exact path="/tour" exact render={(props) => <TourForm {...props} submitTourForm={this.submitTourHandler.bind(this)} />} />
 
             </Switch>
           </div>

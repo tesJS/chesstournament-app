@@ -6,12 +6,12 @@ const PairingListSection=function (props) {
               {' '}
               <span>Complete List of Round Pairings</span>{' '}
             </span>
-            <p>
+            <div>
               <span className='listPairs'>
                 Current Round {props.round}
               </span>
-            </p>
-            <p>{props.pairingList}</p>
+            </div>
+            {props.pairingList}
           </div>);
 }
 export default PairingListSection;
