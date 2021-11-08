@@ -4,17 +4,13 @@ import './Pairings.css';
 
 const Pairings = props => {
   return (
-    
-    <div
-      className={props.players}
-      style={{ border: '2px solid blue', margin: '10px' }}
-    >
-      <label className='item' htmlFor='result'>
+    <div className={props.players} style={{}}>
+      <label className='item1' htmlFor='result'>
         {props.player1}
       </label>
       <select
         onChange={props.selected}
-        className='item'
+        className='item1'
         name='result'
         id='result'
         required
@@ -25,7 +21,7 @@ const Pairings = props => {
         <option value='draw'>1/2-1/2</option>
         <option value='lose'>0-1</option>
       </select>
-      <label className='item' htmlFor='result'>
+      <label className='item1' htmlFor='result'>
         {props.player2}
       </label>
     </div>

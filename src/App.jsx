@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Pairings from './Pairings';
 import PlayerService from './data/PlayerService';
@@ -51,7 +51,6 @@ players.push( new Player('Tewolde Abay', 2300, 'Tigray Chess Federation'));
 for(let i=0;i<players.length;i++)    
 PlayerService.postPlayer(players[i]); */
 
-
 /*  players: [
         new Player('A', 1985, 'Helsingin Shakki Klubbi'),
         new Player('B', 2854, 'St Lous Chess Club'),
@@ -62,7 +61,6 @@ PlayerService.postPlayer(players[i]); */
         new Player('G', 2200, 'British Chess Federation'),
         new Player('H', 2310, 'Italian Chess Federation'),
       ], */
-
 
 class App extends Component {
   constructor(props) {
@@ -78,7 +76,7 @@ class App extends Component {
       showResultButtonClicked: false,
       submitResultButtonClicked: false,
       resetButtonClicked: false,
-      tournamentID: ""
+      tournamentID: '',
     };
     console.log('Constructor:- ', document);
     /* this.state.players.forEach(el => {
@@ -93,78 +91,71 @@ class App extends Component {
     inputClub: '#club',
   };
 
-
   componentDidMount() {
-
-    PlayerService.getPlayers().then((response) => {
+    PlayerService.getPlayers().then(response => {
       let newState = { ...this.state };
       let players = [];
 
       for (let i = 0; i < response.length; i++) {
-        players.push(new Player(response[i].name, response[i].elo, response[i].club))
+        players.push(
+          new Player(response[i].name, response[i].elo, response[i].club)
+        );
         players[i].id = response[i].id;
       }
       newState.players = players;
-      console.log("From ComponentDidMount oldState:- ", this.state);
-      console.log("From ComponentDidMount newState:- ", newState);
+      console.log('From ComponentDidMount oldState:- ', this.state);
+      console.log('From ComponentDidMount newState:- ', newState);
       this.setState(newState);
-
     });
   }
 
-  //Save each players score to tournamentreults table in chesstourDB 
+  //Save each players score to tournamentreults table in chesstourDB
   saveButtonHandler(players) {
     let tourid = this.state.tournamentID;
     let playerid;
-    if (tourid !== "") {
-
-      players.forEach((el) => {
-
-        playerid= parseInt(el.id);
-        PlayerService.postTournamentResult(new TournamentResult(playerid,tourid, el.score));
-
+    if (tourid !== '') {
+      players.forEach(el => {
+        playerid = parseInt(el.id);
+        PlayerService.postTournamentResult(
+          new TournamentResult(playerid, tourid, el.score)
+        );
       });
     }
   }
 
-
-  //Save tournament form data to Tournament table in chesstourDB 
+  //Save tournament form data to Tournament table in chesstourDB
   submitTourHandler(event) {
     event.preventDefault();
     let newState = { ...this.state };
     let tourdetails = document.querySelector('#tournamentDesc');
-    let noplayersField = document.querySelector("#noplayers");
-    let norounds = document.querySelector("#rounds");
-    let tourid = document.querySelector("#tourid");
+    let noplayersField = document.querySelector('#noplayers');
+    let norounds = document.querySelector('#rounds');
+    let tourid = document.querySelector('#tourid');
     let noplayers = parseInt(noplayersField.value);
 
-    PlayerService.postTournament(new Tournament(noplayers, tourdetails.value, norounds.value, tourid.value));
+    PlayerService.postTournament(
+      new Tournament(noplayers, tourdetails.value, norounds.value, tourid.value)
+    );
 
-
-    newState.tournamentID = tourid.value;// to link registering the tournamentresults table  to this tournament
+    newState.tournamentID = tourid.value; // to link registering the tournamentresults table  to this tournament
     tourdetails.value = '';
     noplayersField.value = '';
     norounds.value = '';
-    tourid.value = ''
-    
-    this.setState(newState)
+    tourid.value = '';
 
-
+    this.setState(newState);
   }
   submitPlayerHandler(event) {
     event.preventDefault();
 
-
-
     let newState = { ...this.state };
-
 
     let inputName = document.querySelector(this.DOMstrings.inputName);
     let inputElo = document.querySelector(this.DOMstrings.inputElo);
     let inputClub = document.querySelector(this.DOMstrings.inputClub);
 
     let player = new Player(inputName.value, inputElo.value, inputClub.value);
-    PlayerService.postPlayer(player); // save it to database 
+    PlayerService.postPlayer(player); // save it to database
     //player.setId();
 
     if (inputName.value !== '' && inputElo.value !== '') {
@@ -183,7 +174,7 @@ class App extends Component {
   pairedHandler() {
     let newState = { ...this.state };
 
-    console.log("State returned after  TourFormHandler:- ", this.state);
+    console.log('State returned after  TourFormHandler:- ', this.state);
     if (!newState.pairButtonClicked) {
       newState.pairButtonClicked = true;
       newState.counter++;
@@ -266,7 +257,6 @@ class App extends Component {
   showResultHandler() {
     let newState = { ...this.state };
     if (!newState.pairButtonClicked || newState.finalRound) {
-
       newState.showResultButtonClicked = true;
       console.log('The state from showResultButton', newState);
       this.setState(newState);
@@ -278,7 +268,7 @@ class App extends Component {
     newState.counter = 0;
     newState.resetButtonClicked = true;
     newState.currentRoundGames = [];
-    newState.players.forEach((el) => {
+    newState.players.forEach(el => {
       el.score = 0;
     });
     console.log('The state from resetHandler', newState);
@@ -286,7 +276,8 @@ class App extends Component {
   }
 
   render() {
-    let pairedList = [], players,
+    let pairedList = [],
+      players,
       round = new Round(
         this.state.players,
         this.state.counter,
@@ -299,10 +290,8 @@ class App extends Component {
 
     let listPlayers = players.map((el, ind) => {
       return (
-        <div key={el.id}>
-
+        <div class='list' key={el.id}>
           {el.name} {el.elo} {el.club} {el.score}
-
         </div>
       );
     });
@@ -333,50 +322,59 @@ class App extends Component {
     } else if (this.state.showResultButtonClicked) {
       pairedList = players.map((el, id) => {
         return (
-          <div className="playersList" key={el.id}>
-
+          <div className='playersList' key={el.id}>
             {el.name} - {el.score}
-
           </div>
         );
       });
     }
 
-
-
     return (
-      <div className="App">
+      <div className='App'>
         <Router>
-
-          <div className="header items">
-
+          <div className='header items'>
             <h2> Chess Tournament Software </h2>
-            <ul className="App-header">
+            <ul className='App-header'>
               <li>
-                <Link to="/">Home</Link>
+                <Link style={{ color: 'white', textDecoration: 'none' }} to='/'>
+                  Home
+                </Link>
               </li>
               <li>
-                <Link to="/tour">Tournament Form</Link>
+                <Link
+                  to='/tour'
+                  style={{ color: 'white', textDecoration: 'none' }}
+                >
+                  Tournament Form
+                </Link>
               </li>
               <li>
-                <Link to="/add">Add</Link>
+                <Link
+                  to='/add'
+                  style={{ color: 'white', textDecoration: 'none' }}
+                >
+                  Add
+                </Link>
               </li>
               <li>
-                <Link to="/contact">Contact Us</Link>
+                <Link
+                  to='/contact'
+                  style={{ color: 'white', textDecoration: 'none' }}
+                >
+                  Contact Us
+                </Link>
               </li>
             </ul>
-
-
           </div>
 
-          <div className="body items">
-
+          <div className='body items'>
             <Switch>
-
               <Route
-                exact path="/"
-                render={(props) =>
-                  <Home {...props}
+                exact
+                path='/'
+                render={props => (
+                  <Home
+                    {...props}
                     listOfPlayers={listPlayers}
                     pairedHandler={this.pairedHandler.bind(this)}
                     resetHandler={this.resetHandler.bind(this)}
@@ -384,23 +382,40 @@ class App extends Component {
                     roundResultHandler={this.roundResultHandler.bind(this)}
                     pairedList={pairedList}
                     showResultHandler={this.showResultHandler.bind(this)}
-                    saveButtonHandler={this.saveButtonHandler.bind(this, this.state.players)} />
-                }
+                    saveButtonHandler={this.saveButtonHandler.bind(
+                      this,
+                      this.state.players
+                    )}
+                  />
+                )}
               />
-              <Route exact path="/add"
-                render={(props) => <AddPlayerSection {...props} submit={this.submitPlayerHandler.bind(this)} />} />
+              <Route
+                exact
+                path='/add'
+                render={props => (
+                  <AddPlayerSection
+                    {...props}
+                    submit={this.submitPlayerHandler.bind(this)}
+                  />
+                )}
+              />
 
-              <Route exact path="/tour" exact render={(props) => <TourForm {...props} submitTourForm={this.submitTourHandler.bind(this)} />} />
-
+              <Route
+                exact
+                path='/tour'
+                exact
+                render={props => (
+                  <TourForm
+                    {...props}
+                    submitTourForm={this.submitTourHandler.bind(this)}
+                  />
+                )}
+              />
             </Switch>
           </div>
-
-
-
-        </Router></div>
-
+        </Router>
+      </div>
     );
-
   }
 }
 
