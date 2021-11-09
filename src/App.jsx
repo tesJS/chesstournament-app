@@ -83,7 +83,8 @@ class App extends Component {
       el.setId();
     }); */
   }
-
+ pairedList;
+ listPlayers;
   storeResults = [];
   DOMstrings = {
     inputName: '#name',
@@ -172,16 +173,48 @@ class App extends Component {
 
   //Pair Players Buton-Handler
   pairedHandler() {
-    let newState = { ...this.state };
 
-    console.log('State returned after  TourFormHandler:- ', this.state);
-    if (!newState.pairButtonClicked) {
-      newState.pairButtonClicked = true;
-      newState.counter++;
-      console.log('The state from pairHandler', newState);
-      this.setState(newState);
-    } else alert('Enter round results or reset the tournament!');
-  }
+     
+      let newState = { ...this.state };
+      let round=new Round(newState.players,newState.counter,newState.currentRoundGames)
+      let currentRoundGames = round.generateRoundGames();
+      //if round games   generator does not return null
+      if (currentRoundGames != null) {
+
+        newState.currentRoundGames.push(currentRoundGames);
+        newState.pairButtonClicked=true;
+        newState.counter++;
+
+        //store list of paired players to pairedList variable
+        for (var i = 0; i < currentRoundGames.length; i++) {
+          this.pairedList.push(
+            <Pairings
+              key={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
+              player1={currentRoundGames[i].player1.name}
+              player2={currentRoundGames[i].player2.name}
+              players={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
+              selected={this.selectHandler.bind(this)}
+            ></Pairings>
+          );
+        }
+      } 
+      //if round games   generator does return null, max round reached
+      else {
+        alert(
+          'Maximum Round Reached!!! \n Press Show Button to see full standings!'
+        );      
+        
+      }
+    }
+
+
+
+
+
+
+
+    
+    
   //select option handler
   selectHandler(e) {
     let result = e.target.value;
@@ -202,6 +235,13 @@ class App extends Component {
     newState.showResultButtonClicked = false;
     newState.submitResultButtonClicked = false;
     newState.pairButtonClicked = false;
+    newState.currentRoundGames = [];
+    newState.showPlayersList=false;
+    newState.players.forEach(el => {
+      el.score = 0;
+    });
+    this.pairedList="";
+    this.listPlayers="";
   }
   //Submit Results Button after the round games list - to enter the round games result
   roundResultHandler(e) {
@@ -209,18 +249,21 @@ class App extends Component {
     let noPlayers = this.state.players.length;
     let gamesPerRound = Math.floor(noPlayers / 2);
 
-    if (this.storeResults.length === gamesPerRound) {
-      this.storeResults.forEach(el => {
-        this.selectProsessor(el);
-      });
-      this.setStatus(newState);
-      newState.submitResultButtonClicked = true;
-      this.storeResults = [];
-      console.log('The state from roundResultHandler', newState);
-      this.setState(newState);
-    } else {
-      window.alert("Enter all games' results!");
-    }
+        if(newState.pairButtonClicked){
+            if (this.storeResults.length === gamesPerRound) {
+              this.storeResults.forEach(el => {
+                this.selectProsessor(el);
+              });
+              this.setStatus(newState);
+              newState.submitResultButtonClicked = true;
+              newState.pairButtonClicked=false;
+              this.storeResults = [];
+              console.log('The state from roundResultHandler', newState);
+              this.setState(newState);
+            } else {
+              window.alert("Enter all games' results!");
+            }
+          }
   }
 
   selectProsessor(obj) {
@@ -256,9 +299,18 @@ class App extends Component {
 
   showResultHandler() {
     let newState = { ...this.state };
-    if (!newState.pairButtonClicked || newState.finalRound) {
+    
+    if (!newState.pairButtonClicked) {
       newState.showResultButtonClicked = true;
-      console.log('The state from showResultButton', newState);
+      
+        this.pairedList = newState.players.map((el, id) => {
+          return (
+            <div className='playersList' key={el.id}>
+              {el.name} - {el.score}
+            </div>
+          );
+        });
+      
       this.setState(newState);
     } else alert('Enter round results or reset the tournament!');
   }
@@ -266,11 +318,8 @@ class App extends Component {
     let newState = { ...this.state };
 
     newState.counter = 0;
-    newState.resetButtonClicked = true;
-    newState.currentRoundGames = [];
-    newState.players.forEach(el => {
-      el.score = 0;
-    });
+    this.setStatus(newState);      
+    
     console.log('The state from resetHandler', newState);
     this.setState(newState);
   }
@@ -283,51 +332,18 @@ class App extends Component {
         this.state.counter,
         this.state.currentRoundGames
       ),
-      round1,
       round2 = new Round(this.state.players, 1, null);
 
     players = round2.getPlayers();
 
-    let listPlayers = players.map((el, ind) => {
+    this.listPlayers = players.map((el, ind) => {
       return (
         <div class='list' key={el.id}>
           {el.name} {el.elo} {el.club} {el.score}
         </div>
       );
     });
-    if (this.state.pairButtonClicked) {
-      round1 = round.generateRoundGames();
-      if (round1 != null) {
-        this.state.currentRoundGames.push(round1);
-        for (var i = 0; i < round1.length; i++) {
-          pairedList.push(
-            <Pairings
-              key={`${round1[i].player1.id} ${round1[i].player2.id}`}
-              player1={round1[i].player1.name}
-              player2={round1[i].player2.name}
-              players={`${round1[i].player1.id} ${round1[i].player2.id}`}
-              selected={this.selectHandler.bind(this)}
-            ></Pairings>
-          );
-        }
-      } else {
-        let newState = { ...this.state };
-        newState.counter--;
-        newState.finalRound = true;
-        this.setState(newState);
-        alert(
-          'Maximum Round Reached!!! \n Press Show Button to see full standings!'
-        );
-      }
-    } else if (this.state.showResultButtonClicked) {
-      pairedList = players.map((el, id) => {
-        return (
-          <div className='playersList' key={el.id}>
-            {el.name} - {el.score}
-          </div>
-        );
-      });
-    }
+    
 
     return (
       <div className='App'>
@@ -375,7 +391,7 @@ class App extends Component {
                 render={props => (
                   <Home
                     {...props}
-                    listOfPlayers={listPlayers}
+                    listOfPlayers={this.listPlayers}
                     pairedHandler={this.pairedHandler.bind(this)}
                     resetHandler={this.resetHandler.bind(this)}
                     counter={this.state.counter}
