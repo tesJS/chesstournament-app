@@ -11,7 +11,7 @@ function Home(props) {
         <div className="pairingListSection item">
             <PairingListSection
                 round={props.counter}
-                pairingList={props.pairedList} />
+                pairsList={props.pairList} />
         </div>
 
 

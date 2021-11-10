@@ -11,7 +11,8 @@ const PairingListSection=function (props) {
                 Current Round {props.round}
               </span>
             </div>
-            {props.pairingList}
+            {props.pairsList}
+            
           </div>);
 }
 export default PairingListSection;

@@ -10,6 +10,7 @@ import AddPlayerSection from './AddPlayerSection';
 import Home from './Home';
 import Tournament from './data/Tournament';
 import TournamentResult from './data/TournamentResult';
+import cloneDeep from 'clone-deep';
 
 /* 
 
@@ -77,14 +78,16 @@ class App extends Component {
       submitResultButtonClicked: false,
       resetButtonClicked: false,
       tournamentID: '',
+      tournamentRounds:0,
+      pairedList:[]
+      
     };
     console.log('Constructor:- ', document);
     /* this.state.players.forEach(el => {
       el.setId();
     }); */
   }
- pairedList;
- listPlayers;
+  tournamentForm; 
   storeResults = [];
   DOMstrings = {
     inputName: '#name',
@@ -113,36 +116,48 @@ class App extends Component {
   //Save each players score to tournamentreults table in chesstourDB
   saveButtonHandler(players) {
     let tourid = this.state.tournamentID;
+    let noRounds = this.state.tournamentRounds;
     let playerid;
-    if (tourid !== '') {
-      players.forEach(el => {
+
+    //If the user enters tournament id and the minimum number of rounds played is equal or greater than the one filled in the tournament form
+    if (tourid !== ''&& this.state.counter>=noRounds) { 
+      this.state.players.forEach(el => {
         playerid = parseInt(el.id);
         PlayerService.postTournamentResult(
           new TournamentResult(playerid, tourid, el.score)
         );
       });
+      PlayerService.postTournament(this.tournamentForm );
+      this.resetHandler(); //and then reset the page
     }
+    else alert("Enter the tournament form or play the minimum no of rounds not less than the one in the tournament form!!!");
   }
 
   //Save tournament form data to Tournament table in chesstourDB
   submitTourHandler(event) {
     event.preventDefault();
     let newState = { ...this.state };
-    let tourdetails = document.querySelector('#tournamentDesc');
+    let tourdetailsField = document.querySelector('#tournamentDesc');
     let noplayersField = document.querySelector('#noplayers');
-    let norounds = document.querySelector('#rounds');
-    let tourid = document.querySelector('#tourid');
-    let noplayers = parseInt(noplayersField.value);
+    let noroundsField = document.querySelector('#rounds');
+    let touridField = document.querySelector('#tourid');
 
-    PlayerService.postTournament(
+    let noplayers =cloneDeep ( parseInt(noplayersField.value));
+    let tourdetails=cloneDeep(tourdetailsField.value);
+    let norounds=cloneDeep(noroundsField.value);
+    let tourid=cloneDeep(touridField.value);
+
+
+    /* PlayerService.postTournament(
       new Tournament(noplayers, tourdetails.value, norounds.value, tourid.value)
-    );
-
-    newState.tournamentID = tourid.value; // to link registering the tournamentresults table  to this tournament
-    tourdetails.value = '';
+    ); */
+    this.tournamentForm=new Tournament( noplayers,tourdetails,norounds,tourid);
+    newState.tournamentID = tourid; // to link registering the tournamentresults table  to this tournament
+    newState.tournamentRounds = norounds; // to link registering the tournamentresults table  to this tournament
+    tourdetailsField.value = '';
     noplayersField.value = '';
-    norounds.value = '';
-    tourid.value = '';
+    noroundsField.value = '';
+    touridField.value = '';
 
     this.setState(newState);
   }
@@ -175,28 +190,44 @@ class App extends Component {
   pairedHandler() {
 
      
-      let newState = { ...this.state };
-      let round=new Round(newState.players,newState.counter,newState.currentRoundGames)
-      let currentRoundGames = round.generateRoundGames();
+      let newState = { ...this.state },currentRoundGames;
+      newState.counter++;
+      if(newState.counter==1)
+      {
+        let firstRound=new Round(newState.players,newState.counter,null)
+        currentRoundGames = firstRound.generateRoundGames();
+        newState.currentRoundGames.push(currentRoundGames);
+      }
+      else{
+        let otherRounds=new Round(newState.players,newState.counter,newState.currentRoundGames)
+        currentRoundGames = otherRounds.generateRoundGames();
+        newState.currentRoundGames.push(currentRoundGames);
+
+      }
+      
       //if round games   generator does not return null
       if (currentRoundGames != null) {
 
-        newState.currentRoundGames.push(currentRoundGames);
-        newState.pairButtonClicked=true;
-        newState.counter++;
-
-        //store list of paired players to pairedList variable
-        for (var i = 0; i < currentRoundGames.length; i++) {
-          this.pairedList.push(
-            <Pairings
-              key={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
-              player1={currentRoundGames[i].player1.name}
-              player2={currentRoundGames[i].player2.name}
-              players={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
-              selected={this.selectHandler.bind(this)}
-            ></Pairings>
-          );
-        }
+        
+              newState.currentRoundGames.push(currentRoundGames);
+              newState.pairButtonClicked=true;
+              newState.submitResultButtonClicked=false;
+              newState.pairedList=[];
+            //store list of paired players to pairedList variable
+          for (var i = 0; i < currentRoundGames.length; i++) {
+            newState.pairedList.push(
+              <Pairings
+                key={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
+                player1={currentRoundGames[i].player1.name}
+                player2={currentRoundGames[i].player2.name}
+                players={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
+                selected={this.selectHandler.bind(this)}
+              ></Pairings>
+            );
+          }
+          this.setState(newState);
+        
+        
       } 
       //if round games   generator does return null, max round reached
       else {
@@ -240,8 +271,8 @@ class App extends Component {
     newState.players.forEach(el => {
       el.score = 0;
     });
-    this.pairedList="";
-    this.listPlayers="";
+    newState.pairedList=[];
+    
   }
   //Submit Results Button after the round games list - to enter the round games result
   roundResultHandler(e) {
@@ -254,7 +285,7 @@ class App extends Component {
               this.storeResults.forEach(el => {
                 this.selectProsessor(el);
               });
-              this.setStatus(newState);
+              newState.pairedList=[];
               newState.submitResultButtonClicked = true;
               newState.pairButtonClicked=false;
               this.storeResults = [];
@@ -299,11 +330,13 @@ class App extends Component {
 
   showResultHandler() {
     let newState = { ...this.state };
-    
+    let sortedPlayersByScore=newState.players.sort(function (pl1, pl2) {
+      return pl2.score - pl1.score;
+    });
     if (!newState.pairButtonClicked) {
       newState.showResultButtonClicked = true;
       
-        this.pairedList = newState.players.map((el, id) => {
+        newState.pairedList = sortedPlayersByScore.map((el, id) => {
           return (
             <div className='playersList' key={el.id}>
               {el.name} - {el.score}
@@ -325,24 +358,23 @@ class App extends Component {
   }
 
   render() {
-    let pairedList = [],
-      players,
-      round = new Round(
-        this.state.players,
-        this.state.counter,
-        this.state.currentRoundGames
-      ),
-      round2 = new Round(this.state.players, 1, null);
 
-    players = round2.getPlayers();
+    console.log("The state from RETURN****",this.state);
 
-    this.listPlayers = players.map((el, ind) => {
+    
+
+
+    let listPlayers = this.state.players.map((el, ind) => {
       return (
-        <div class='list' key={el.id}>
+        <div className='list' key={el.id}>
           {el.name} {el.elo} {el.club} {el.score}
         </div>
       );
     });
+
+   
+
+   
     
 
     return (
@@ -391,12 +423,12 @@ class App extends Component {
                 render={props => (
                   <Home
                     {...props}
-                    listOfPlayers={this.listPlayers}
+                    listOfPlayers={listPlayers}
                     pairedHandler={this.pairedHandler.bind(this)}
                     resetHandler={this.resetHandler.bind(this)}
                     counter={this.state.counter}
                     roundResultHandler={this.roundResultHandler.bind(this)}
-                    pairedList={pairedList}
+                    pairList={this.state.pairedList}
                     showResultHandler={this.showResultHandler.bind(this)}
                     saveButtonHandler={this.saveButtonHandler.bind(
                       this,

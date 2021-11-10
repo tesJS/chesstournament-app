@@ -9,7 +9,7 @@ class PlayerService {
 
      async postPlayer(player){
         
-       const data= axios.post(PLAYERS_REST_API_URL+'/add', player);
+       const data= axios.post(PLAYERS_REST_API_URL+'api/add', player);
        return data;
           
     }
@@ -29,14 +29,14 @@ class PlayerService {
 
     async postTournament(tour){
     
-       axios.post('http://localhost:8080/tour/save', tour);
+       axios.post('http://localhost:8080/tour/api/save', tour);
      
           
     }
 
     async postTournamentResult(tourResult){
     
-     axios.post('http://localhost:8080/tour/result/save', tourResult);
+     axios.post('http://localhost:8080/tour/api/result/save', tourResult);
      
           
     }
