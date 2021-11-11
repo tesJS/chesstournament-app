@@ -78,7 +78,7 @@ class App extends Component {
       submitResultButtonClicked: false,
       resetButtonClicked: false,
       tournamentID: '',
-      tournamentRounds:0,
+      tournamentRounds:-1,
       pairedList:[]
       
     };
@@ -109,6 +109,8 @@ class App extends Component {
       newState.players = players;
       console.log('From ComponentDidMount oldState:- ', this.state);
       console.log('From ComponentDidMount newState:- ', newState);
+      let saveButton = document.querySelector('.showSaveButton');
+      saveButton.disabled=true;
       this.setState(newState);
     });
   }
@@ -225,6 +227,12 @@ class App extends Component {
               ></Pairings>
             );
           }
+          let pairButton = document.querySelector('.pairButton');
+          let saveButton = document.querySelector('.showSaveButton');
+          pairButton.disabled=true;
+          //if user entered tournament form and minimum number of rounds played then enable save button
+          if(newState.counter>=newState.tournamentRounds&&newState.tournamentRounds!==-1)
+          saveButton.disabled=false;
           this.setState(newState);
         
         
@@ -232,7 +240,7 @@ class App extends Component {
       //if round games   generator does return null, max round reached
       else {
         alert(
-          'Maximum Round Reached!!! \n Press Show Button to see full standings!'
+          'Maximum Round Reached!!! \n Press Show Button to see full standings or save button to save the tournament data!!!'
         );      
         
       }
@@ -281,6 +289,8 @@ class App extends Component {
     let gamesPerRound = Math.floor(noPlayers / 2);
 
         if(newState.pairButtonClicked){
+          let pairButton = document.querySelector('.pairButton');
+          pairButton.disabled=false;
             if (this.storeResults.length === gamesPerRound) {
               this.storeResults.forEach(el => {
                 this.selectProsessor(el);
@@ -349,7 +359,8 @@ class App extends Component {
   }
   resetHandler() {
     let newState = { ...this.state };
-
+    let pairButton = document.querySelector('.pairButton');
+    pairButton.disabled=false;
     newState.counter = 0;
     this.setStatus(newState);      
     
