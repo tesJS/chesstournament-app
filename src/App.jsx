@@ -373,9 +373,11 @@ class App extends Component {
     console.log("The state from RETURN****",this.state);
 
     
+    let sortedPlayersByScore=this.state.players.sort(function (pl1, pl2) {
+      return pl2.score - pl1.score;
+    });
 
-
-    let listPlayers = this.state.players.map((el, ind) => {
+    let listPlayers = sortedPlayersByScore.map((el, ind) => {
       return (
         <div className='list' key={el.id}>
           {el.name} {el.elo} {el.club} {el.score}
