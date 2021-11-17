@@ -11,7 +11,7 @@ import Home from './Home';
 import Tournament from './data/Tournament';
 import TournamentResult from './data/TournamentResult';
 import cloneDeep from 'clone-deep';
-
+import ContactForm from './ContactForm';
 /* 
 
      newState.players = [
@@ -82,10 +82,7 @@ class App extends Component {
       pairedList:[]
       
     };
-    console.log('Constructor:- ', document);
-    /* this.state.players.forEach(el => {
-      el.setId();
-    }); */
+    
   }
   tournamentForm; 
   storeResults = [];
@@ -106,11 +103,9 @@ class App extends Component {
         );
         players[i].id = response[i].id;
       }
-      newState.players = players;
-      console.log('From ComponentDidMount oldState:- ', this.state);
-      console.log('From ComponentDidMount newState:- ', newState);
-      let saveButton = document.querySelector('.showSaveButton');
-      saveButton.disabled=true;
+      newState.players = players;    
+      /* let saveButton = document.querySelector('.showSaveButton');
+      saveButton.disabled=true; */
       this.setState(newState);
     });
   }
@@ -269,6 +264,8 @@ class App extends Component {
     if (searchIndex >= 0) this.storeResults.splice(searchIndex, 1);
     if (result !== 'default') this.storeResults.push({ id: str, result });
   }
+
+  //called in connection with resethandler method to reset state parameters
   setStatus(newState) {
     newState.resetButtonClicked = false;
     newState.showResultButtonClicked = false;
@@ -277,7 +274,9 @@ class App extends Component {
     newState.currentRoundGames = [];
     newState.showPlayersList=false;
     newState.players.forEach(el => {
-      el.score = 0;
+      el.score = 0;//each player's score is reset
+      el.oppList=[];//each player's list is reset
+      el.whiteTurns=0;//each player's list is reset
     });
     newState.pairedList=[];
     
@@ -298,8 +297,7 @@ class App extends Component {
               newState.pairedList=[];
               newState.submitResultButtonClicked = true;
               newState.pairButtonClicked=false;
-              this.storeResults = [];
-              console.log('The state from roundResultHandler', newState);
+              this.storeResults = [];             
               this.setState(newState);
             } else {
               window.alert("Enter all games' results!");
@@ -364,13 +362,13 @@ class App extends Component {
     newState.counter = 0;
     this.setStatus(newState);      
     
-    console.log('The state from resetHandler', newState);
+    console.log('The state from Reset Handler', newState);
     this.setState(newState);
   }
 
   render() {
 
-    console.log("The state from RETURN****",this.state);
+    console.log("*****************************The state from Render method**************************************",this.state);
 
     
     let sortedPlayersByScore=this.state.players.sort(function (pl1, pl2) {
@@ -472,6 +470,9 @@ class App extends Component {
                   />
                 )}
               />
+
+              <Route exact path='/contact' component={ContactForm} />   
+              
             </Switch>
           </div>
         </Router>
