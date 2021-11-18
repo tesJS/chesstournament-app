@@ -121,7 +121,7 @@ class App extends Component {
       this.state.players.forEach(el => {
         playerid = parseInt(el.id);
         PlayerService.postTournamentResult(
-          new TournamentResult(playerid, tourid, el.score)
+          new TournamentResult(playerid, tourid, el.score.toString())
         );
       });
       PlayerService.postTournament(this.tournamentForm );

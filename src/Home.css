@@ -18,6 +18,8 @@
   text-align: center;
   grid-row: 1;
   grid-column: 2;
+  border-left: black solid 2rem;
+  border-right: solid black 2px;
 }
 .pairingListSection {
   text-align: center;
@@ -30,5 +32,6 @@
   grid-column: 1 / span 2;
   display: flex;
   flex-direction: row;
+  margin-top: 3rem;;
  /*  border: 2px solid red; */
 }
