@@ -78,13 +78,11 @@ class App extends Component {
       submitResultButtonClicked: false,
       resetButtonClicked: false,
       tournamentID: '',
-      tournamentRounds:-1,
-      pairedList:[]
-      
+      tournamentRounds: -1,
+      pairedList: [],
     };
-    
   }
-  tournamentForm; 
+  tournamentForm;
   storeResults = [];
   DOMstrings = {
     inputName: '#name',
@@ -103,7 +101,7 @@ class App extends Component {
         );
         players[i].id = response[i].id;
       }
-      newState.players = players;    
+      newState.players = players;
       /* let saveButton = document.querySelector('.showSaveButton');
       saveButton.disabled=true; */
       this.setState(newState);
@@ -117,17 +115,19 @@ class App extends Component {
     let playerid;
 
     //If the user enters tournament id and the minimum number of rounds played is equal or greater than the one filled in the tournament form
-    if (tourid !== ''&& this.state.counter>=noRounds) { 
+    if (tourid !== '' && this.state.counter >= noRounds) {
       this.state.players.forEach(el => {
         playerid = parseInt(el.id);
         PlayerService.postTournamentResult(
           new TournamentResult(playerid, tourid, el.score.toString())
         );
       });
-      PlayerService.postTournament(this.tournamentForm );
+      PlayerService.postTournament(this.tournamentForm);
       this.resetHandler(); //and then reset the page
-    }
-    else alert("Enter the tournament form or play the minimum no of rounds not less than the one in the tournament form!!!");
+    } else
+      alert(
+        'Enter the tournament form or play the minimum no of rounds not less than the one in the tournament form!!!'
+      );
   }
 
   //Save tournament form data to Tournament table in chesstourDB
@@ -139,16 +139,20 @@ class App extends Component {
     let noroundsField = document.querySelector('#rounds');
     let touridField = document.querySelector('#tourid');
 
-    let noplayers =cloneDeep ( parseInt(noplayersField.value));
-    let tourdetails=cloneDeep(tourdetailsField.value);
-    let norounds=cloneDeep(noroundsField.value);
-    let tourid=cloneDeep(touridField.value);
-
+    let noplayers = cloneDeep(parseInt(noplayersField.value));
+    let tourdetails = cloneDeep(tourdetailsField.value);
+    let norounds = cloneDeep(noroundsField.value);
+    let tourid = cloneDeep(touridField.value);
 
     /* PlayerService.postTournament(
       new Tournament(noplayers, tourdetails.value, norounds.value, tourid.value)
     ); */
-    this.tournamentForm=new Tournament( noplayers,tourdetails,norounds,tourid);
+    this.tournamentForm = new Tournament(
+      noplayers,
+      tourdetails,
+      norounds,
+      tourid
+    );
     newState.tournamentID = tourid; // to link registering the tournamentresults table  to this tournament
     newState.tournamentRounds = norounds; // to link registering the tournamentresults table  to this tournament
     tourdetailsField.value = '';
@@ -185,70 +189,61 @@ class App extends Component {
 
   //Pair Players Buton-Handler
   pairedHandler() {
-
-     
-      let newState = { ...this.state },currentRoundGames;
-      newState.counter++;
-      if(newState.counter==1)
-      {
-        let firstRound=new Round(newState.players,newState.counter,null)
-        currentRoundGames = firstRound.generateRoundGames();
-        newState.currentRoundGames.push(currentRoundGames);
-      }
-      else{
-        let otherRounds=new Round(newState.players,newState.counter,newState.currentRoundGames)
-        currentRoundGames = otherRounds.generateRoundGames();
-        newState.currentRoundGames.push(currentRoundGames);
-
-      }
-      
-      //if round games   generator does not return null
-      if (currentRoundGames != null) {
-
-        
-              newState.currentRoundGames.push(currentRoundGames);
-              newState.pairButtonClicked=true;
-              newState.submitResultButtonClicked=false;
-              newState.pairedList=[];
-            //store list of paired players to pairedList variable
-          for (var i = 0; i < currentRoundGames.length; i++) {
-            newState.pairedList.push(
-              <Pairings
-                key={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
-                player1={currentRoundGames[i].player1.name}
-                player2={currentRoundGames[i].player2.name}
-                players={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
-                selected={this.selectHandler.bind(this)}
-              ></Pairings>
-            );
-          }
-          let pairButton = document.querySelector('.pairButton');
-          let saveButton = document.querySelector('.showSaveButton');
-          pairButton.disabled=true;
-          //if user entered tournament form and minimum number of rounds played then enable save button
-          if(newState.counter>=newState.tournamentRounds&&newState.tournamentRounds!==-1)
-          saveButton.disabled=false;
-          this.setState(newState);
-        
-        
-      } 
-      //if round games   generator does return null, max round reached
-      else {
-        alert(
-          'Maximum Round Reached!!! \n Press Show Button to see full standings or save button to save the tournament data!!!'
-        );      
-        
-      }
+    let newState = { ...this.state },
+      currentRoundGames;
+    newState.counter++;
+    if (newState.counter == 1) {
+      let firstRound = new Round(newState.players, newState.counter, null);
+      currentRoundGames = firstRound.generateRoundGames();
+      newState.players = firstRound.getPlayers(); // to validate the list of players participating in the round
+      newState.currentRoundGames.push(currentRoundGames);
+    } else {
+      let otherRounds = new Round(
+        newState.players,
+        newState.counter,
+        newState.currentRoundGames
+      );
+      currentRoundGames = otherRounds.generateRoundGames();
+      newState.currentRoundGames.push(currentRoundGames);
     }
 
+    //if round games   generator does not return null
+    if (currentRoundGames != null) {
+      newState.currentRoundGames.push(currentRoundGames);
+      newState.pairButtonClicked = true;
+      newState.submitResultButtonClicked = false;
+      newState.pairedList = [];
+      //store list of paired players to pairedList variable
+      for (var i = 0; i < currentRoundGames.length; i++) {
+        newState.pairedList.push(
+          <Pairings
+            key={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
+            player1={currentRoundGames[i].player1.name}
+            player2={currentRoundGames[i].player2.name}
+            players={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
+            selected={this.selectHandler.bind(this)}
+          ></Pairings>
+        );
+      }
+      let pairButton = document.querySelector('.pairButton');
+      let saveButton = document.querySelector('.showSaveButton');
+      pairButton.disabled = true;
+      //if user entered tournament form and minimum number of rounds played then enable save button
+      if (
+        newState.counter >= newState.tournamentRounds &&
+        newState.tournamentRounds !== -1
+      )
+        saveButton.disabled = false;
+      this.setState(newState);
+    }
+    //if round games   generator does return null, max round reached
+    else {
+      alert(
+        'Maximum Round Reached!!! \n Press Show Button to see full standings or save button to save the tournament data!!!'
+      );
+    }
+  }
 
-
-
-
-
-
-    
-    
   //select option handler
   selectHandler(e) {
     let result = e.target.value;
@@ -272,14 +267,13 @@ class App extends Component {
     newState.submitResultButtonClicked = false;
     newState.pairButtonClicked = false;
     newState.currentRoundGames = [];
-    newState.showPlayersList=false;
+    newState.showPlayersList = false;
     newState.players.forEach(el => {
-      el.score = 0;//each player's score is reset
-      el.oppList=[];//each player's list is reset
-      el.whiteTurns=0;//each player's list is reset
+      el.score = 0; //each player's score is reset
+      el.oppList = []; //each player's list is reset
+      el.whiteTurns = 0; //each player's list is reset
     });
-    newState.pairedList=[];
-    
+    newState.pairedList = [];
   }
   //Submit Results Button after the round games list - to enter the round games result
   roundResultHandler(e) {
@@ -287,22 +281,22 @@ class App extends Component {
     let noPlayers = this.state.players.length;
     let gamesPerRound = Math.floor(noPlayers / 2);
 
-        if(newState.pairButtonClicked){
-          let pairButton = document.querySelector('.pairButton');
-          pairButton.disabled=false;
-            if (this.storeResults.length === gamesPerRound) {
-              this.storeResults.forEach(el => {
-                this.selectProsessor(el);
-              });
-              newState.pairedList=[];
-              newState.submitResultButtonClicked = true;
-              newState.pairButtonClicked=false;
-              this.storeResults = [];             
-              this.setState(newState);
-            } else {
-              window.alert("Enter all games' results!");
-            }
-          }
+    if (newState.pairButtonClicked) {
+      let pairButton = document.querySelector('.pairButton');
+      pairButton.disabled = false;
+      if (this.storeResults.length === gamesPerRound) {
+        this.storeResults.forEach(el => {
+          this.selectProsessor(el);
+        });
+        newState.pairedList = [];
+        newState.submitResultButtonClicked = true;
+        newState.pairButtonClicked = false;
+        this.storeResults = [];
+        this.setState(newState);
+      } else {
+        window.alert("Enter all games' results!");
+      }
+    }
   }
 
   selectProsessor(obj) {
@@ -338,40 +332,41 @@ class App extends Component {
 
   showResultHandler() {
     let newState = { ...this.state };
-    let sortedPlayersByScore=newState.players.sort(function (pl1, pl2) {
+    let sortedPlayersByScore = newState.players.sort(function (pl1, pl2) {
       return pl2.score - pl1.score;
     });
     if (!newState.pairButtonClicked) {
       newState.showResultButtonClicked = true;
-      
-        newState.pairedList = sortedPlayersByScore.map((el, id) => {
-          return (
-            <div className='playersList' key={el.id}>
-              {el.name} - {el.score}
-            </div>
-          );
-        });
-      
+
+      newState.pairedList = sortedPlayersByScore.map((el, id) => {
+        return (
+          <div className='playersList' key={el.id}>
+            {el.name} - {el.score}
+          </div>
+        );
+      });
+
       this.setState(newState);
     } else alert('Enter round results or reset the tournament!');
   }
   resetHandler() {
     let newState = { ...this.state };
     let pairButton = document.querySelector('.pairButton');
-    pairButton.disabled=false;
+    pairButton.disabled = false;
     newState.counter = 0;
-    this.setStatus(newState);      
-    
+    this.setStatus(newState);
+
     console.log('The state from Reset Handler', newState);
     this.setState(newState);
   }
 
   render() {
+    console.log(
+      '*****************************The state from Render method**************************************',
+      this.state
+    );
 
-    console.log("*****************************The state from Render method**************************************",this.state);
-
-    
-    let sortedPlayersByScore=this.state.players.sort(function (pl1, pl2) {
+    let sortedPlayersByScore = this.state.players.sort(function (pl1, pl2) {
       return pl2.score - pl1.score;
     });
 
@@ -382,11 +377,6 @@ class App extends Component {
         </div>
       );
     });
-
-   
-
-   
-    
 
     return (
       <div className='App'>
@@ -471,8 +461,7 @@ class App extends Component {
                 )}
               />
 
-              <Route exact path='/contact' component={ContactForm} />   
-              
+              <Route exact path='/contact' component={ContactForm} />
             </Switch>
           </div>
         </Router>

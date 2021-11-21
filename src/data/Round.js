@@ -5,9 +5,8 @@ class Round {
   constructor(listOfPlayers, roundNo, allGamesPlayed) {
     this.listOfPlayers = listOfPlayers;
     this.roundNo = roundNo;
-    this.allGamesPlayed = allGamesPlayed;    
+    this.allGamesPlayed = allGamesPlayed;
   }
-
 
   getPlayers() {
     return this.sortPlayers().sortPlayersByScore(this.listOfPlayers);
@@ -119,7 +118,7 @@ class Round {
       },
     };
   }
-//check if playersList is even odd or less than 2
+  //check if playersList is even odd or less than 2
   totalPlayers(playersList) {
     let singlePlayer = false;
     let oddPlayersList = false;
@@ -138,9 +137,11 @@ class Round {
     };
   }
   generateRoundGames() {
-    let player1,players1,
-      player2,players2,
-      playerGames,     
+    let player1,
+      players1,
+      player2,
+      players2,
+      playerGames,
       game,
       pairedPlayers = [],
       unpairedPlayers = [],
@@ -153,18 +154,15 @@ class Round {
     let roundGames = [],
       allGames = [];
     let noPlayers = this.listOfPlayers.length;
-    let players = [...this.listOfPlayers];
-    var i, counter = 0;
+    let players = this.listOfPlayers;
+    var i,
+      counter = 0;
     let mid = noPlayers / 2;
     let gamesPerRound;
-    const { singlePlayer, oddPlayersList, evenPlayersList } = this.totalPlayers(
-      players
-    );
-    const {
-      sortPlayersByElo,
-      sortPlayersByScore,
-      shufflePlayers,
-    } = this.sortPlayers();
+    const { singlePlayer, oddPlayersList, evenPlayersList } =
+      this.totalPlayers(players);
+    const { sortPlayersByElo, sortPlayersByScore, shufflePlayers } =
+      this.sortPlayers();
 
     if (singlePlayer) console.log('Need atleast 2 players to play a round!!!');
     //sort players according to elo for first round
