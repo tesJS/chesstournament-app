@@ -196,7 +196,6 @@ class App extends Component {
       let firstRound = new Round(newState.players, newState.counter, null);
       currentRoundGames = firstRound.generateRoundGames();
       newState.players = firstRound.getPlayers(); // to validate the list of players participating in the round
-      newState.currentRoundGames.push(currentRoundGames);
     } else {
       let otherRounds = new Round(
         newState.players,
@@ -204,7 +203,6 @@ class App extends Component {
         newState.currentRoundGames
       );
       currentRoundGames = otherRounds.generateRoundGames();
-      newState.currentRoundGames.push(currentRoundGames);
     }
 
     //if round games   generator does not return null
