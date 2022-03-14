@@ -1,5 +1,5 @@
-import Player from './Player';
-import Game from './Game';
+import Player from "./Player";
+import Game from "./Game";
 
 class Round {
   constructor(listOfPlayers, roundNo, allGamesPlayed) {
@@ -52,16 +52,16 @@ class Round {
         return bool2;
       });
 
-      candidateGames = gamesYetToPlay.filter(game => {
-        var bool1 = players.some(el => {
+      candidateGames = gamesYetToPlay.filter((game) => {
+        var bool1 = players.some((el) => {
           return el.id === game.player1.id;
         });
-        var bool2 = players.some(el => {
+        var bool2 = players.some((el) => {
           return el.id === game.player2.id;
         });
         return bool1 && bool2;
       });
-      playerGames = candidateGames.filter(game => {
+      playerGames = candidateGames.filter((game) => {
         return game.player1.id === player.id || game.player2.id === player.id;
       });
 
@@ -112,7 +112,7 @@ class Round {
       sortPlayersByWhiteTurns: function (playersList) {
         return [
           ...playersList.sort(function (pl1, pl2) {
-            return pl2.whiteTurns - pl1.whiteTurns;
+            return pl1.whiteTurns - pl2.whiteTurns;
           }),
         ];
       },
@@ -164,31 +164,32 @@ class Round {
     const { sortPlayersByElo, sortPlayersByScore, shufflePlayers } =
       this.sortPlayers();
 
-    if (singlePlayer) console.log('Need atleast 2 players to play a round!!!');
+    if (singlePlayer) console.log("Need atleast 2 players to play a round!!!");
     //sort players according to elo for first round
     // set mid point for first round pairing
     else if (evenPlayersList) {
-      sortPlayersByElo(players);
+      players = sortPlayersByElo(players.slice());
       mid = noPlayers / 2;
       gamesPerRound = noPlayers / 2;
     } else if (oddPlayersList) {
-      sortPlayersByElo(players);
+      players = sortPlayersByElo(players.slice());
       mid = (noPlayers - 1) / 2;
       noPlayers--;
       gamesPerRound = noPlayers / 2;
       byePlayer = players.pop();
     }
     allGames = this.createAllGames(players);
+
     //pair players for  round 1
     if (this.roundNo === 1) {
-      sortPlayersByElo(players);
+      players = sortPlayersByElo(players.slice());
 
       for (i = 0; i <= noPlayers - 2; i++) {
         player1 = players[i];
         while (mid < players.length) {
           player2 = players[mid];
 
-          game = allGames.filter(el => {
+          game = allGames.filter((el) => {
             return el.player1.id == player1.id && el.player2.id == player2.id;
           });
           game = game[0];
@@ -207,11 +208,14 @@ class Round {
       // sort players according to score
 
       while (isNotPaired) {
-        counter++;
+        counter++; // used to set pairdisorer boolean so as to break out of the while loop if the for loop fails to generate all the round games after 10 tries
 
+        // for loop to generate the round's each game
         for (let j = 0; j < gamesPerRound; j++) {
+          // In case of the last remaining two players in the players array
+          //each iteration generates each round game
           if (players.length == 2) {
-            bool = this.allGamesPlayed.flat().some(el => {
+            bool = this.allGamesPlayed.flat().some((el) => {
               return (
                 (el.player1.id === players[0].id ||
                   el.player1.id === players[1].id) &&
@@ -245,7 +249,7 @@ class Round {
             }
 
             unpairedPlayers = players.filter((elt, ind) => {
-              return !pairedPlayers.some(el => {
+              return !pairedPlayers.some((el) => {
                 return elt.id === el.id;
               });
             });
@@ -257,7 +261,7 @@ class Round {
         } // end of for loop
 
         if (roundGames.length === gamesPerRound) {
-          roundGames.forEach(el => {
+          roundGames.forEach((el) => {
             el.player1.setOpponentList(el.player2);
           });
           isNotPaired = false;
@@ -272,8 +276,12 @@ class Round {
           isNotPaired = false;
         }
       } //end of while loop
-      if (!pairDisorder) return roundGames;
-      else return null;
+      if (!pairDisorder) {
+        roundGames.forEach((game) => {
+          game.setPlayersColor();
+        }); // makes use of each player whiteturns counts to set which player takes the white pieces
+        return roundGames;
+      } else return null;
     }
   }
 }

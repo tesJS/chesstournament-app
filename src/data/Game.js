@@ -6,22 +6,16 @@ export default class Game {
   }
 
   setPlayersColor() {
-    if (this.player1.getWhiteTurns() > this.player2.getWhiteTurns())
+    if (this.player1.getWhiteTurns() > this.player2.getWhiteTurns()){
+      console.log(this.player1.name + " has " + this.player1.getWhiteTurns()+ "- white turns than "+ this.player2.name +" who has "+ 
+      this.player2.getWhiteTurns() + " so it is swapped");
       [this.player1, this.player2] = [this.player2, this.player1];
-    else if (this.player1.getWhiteTurns() <= this.player2.getWhiteTurns())
-      [this.player1, this.player2] = [this.player2, this.player1];
+    }
+      
+    
   }
 
-  /*  alreadyPlayed() {
-    opponentsList = [...this.player1.getOpponentList()];
-    if (
-      opponentsList.some(el => {
-        el.id === this.player2.id;
-      })
-    )
-      return false;
-    else return true;
-  } */
+  
 
   setResult(result) {
     if (result === 'win') {
