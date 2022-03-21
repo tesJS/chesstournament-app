@@ -1,32 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import cloneDeep from "clone-deep";
+import React from "react";
+import { useSelector } from "react-redux";
 import "./ListPlayers.css";
 
 const ListPlayers = (props) => {
-  const httpError = useSelector((state) => state.http.httpError);
   const httpErrorMessage = useSelector((state) => state.http.httpErrorMessage);
-  const players = useSelector((state) => state.tournament.players);
-  const submitButton = useSelector(
-    (state) => state.tournament.submitResultButtonClicked
-  );
+  let players = useSelector((state) => state.tournament.players);
   let listHtml, playersList;
 
-  const [plrs, setPlrs] = useState(players);
-
-  useEffect(() => {
-    setPlrs(players);
-  }, [players, submitButton]);
+  console.log("In ListPlayers Section. Players List: ");
+  console.log(players);
+  players = cloneDeep(players);
 
   if (players.length) {
-    console.log("In ListPlayers Section. Players List: ");
-    console.log(players);
-    let sortedPlayersByScore = [...plrs];
-
-    sortedPlayersByScore.sort(function (pl1, pl2) {
+    players.sort(function (pl1, pl2) {
       return pl2.score - pl1.score;
     });
 
-    playersList = sortedPlayersByScore.map((el) => {
+    playersList = players.map((el) => {
       return (
         <div className="list" key={el.id}>
           {el.name} {el.elo} {el.club} {el.score} {el.whiteTurns}w

@@ -15,7 +15,7 @@ export const httpReducer = createSlice({
     },
     removeError(state) {
       state.httpError = false;
-      state.httpErrorMessage = "No Errors !!!";
+      state.httpErrorMessage = "No System Errors !!!";
     },
   },
 });
