@@ -11,8 +11,6 @@ const initialState = {
   showResultButtonClicked: false,
   submitResultButtonClicked: false,
   resetButtonClicked: false,
-  tournamentID: "",
-  tournamentRounds: -1,
   pairedList: [],
   storeResults: [],
   tournamentForm: null,
@@ -107,6 +105,7 @@ export const tournamentReducer = createSlice({
       state.pairButtonClicked = false;
       state.currentRoundGames = [];
       state.showPlayersList = false;
+      state.tournamentForm = null;
       state.players.forEach((el) => {
         el.score = 0; //each player's score is reset
         el.oppList = []; //each player's list is reset

@@ -7,14 +7,14 @@ import TournamentResult from "../data/TournamentResult";
 import PlayerService from "../data/PlayerService";
 import { tournamentActions } from "../store/tournamentReducer";
 import cloneDeep from "clone-deep";
+import { httpActions } from "../store/httpReducer";
 
 const LowerSection = function (props) {
   const dispatch = useDispatch();
+  const tourForm = useSelector((state) => state.tournament.tournamentForm);
+  const counter = useSelector((state) => state.tournament.counter);
+  const players = useSelector((state) => state.tournament.players);
   const tourState = useSelector((state) => state.tournament);
-  const stateStoreResults = useSelector(
-    (state) => state.tournament.storeResults
-  );
-  const httpErrorMessage = useSelector((state) => state.httpErrorMessage);
 
   //select option handler
   const selectHandler = (e) => {
@@ -22,31 +22,37 @@ const LowerSection = function (props) {
   };
 
   //Save each players score to tournamentResults table in chesstourDB
-  const saveButtonHandler = (players) => {
-    let tourState = cloneDeep(tourState);
-    let tourid = tourState.tournamentID;
-    let noRounds = tourState.tournamentRounds;
+  const saveButtonHandler = (event) => {
+    let localTourForm = cloneDeep(tourForm);
+    let tourid = localTourForm.tourid;
+    let norounds = localTourForm.norounds;
     let playerid;
 
     //If the user enters tournament id and the minimum number of rounds played is equal or greater than the one filled in the tournament form
-    if (tourid !== "" && tourState.counter >= noRounds) {
-      players.forEach((el) => {
-        playerid = parseInt(el.id);
-        PlayerService.postTournamentResult(
-          new TournamentResult(playerid, tourid, el.score.toString())
-        );
-      });
-      PlayerService.postTournament(tourState.tournamentForm);
-      resetHandler(); //and then reset the page
+    if (tourid !== "" && counter >= norounds) {
+      try {
+        players.forEach((el) => {
+          playerid = parseInt(el.id);
+          PlayerService.postTournamentResult(
+            new TournamentResult(playerid, tourid, el.score.toString())
+          ).catch((error) => {
+            dispatch(httpActions.displayError(error));
+          });
+        });
+        PlayerService.postTournament(localTourForm);
+        dispatch(tournamentActions.resetHandler()); //and then reset the page
+      } catch (error) {
+        dispatch(httpActions.displayError(error.message));
+      }
     } else
       alert(
-        "Enter the tournament form or play the minimum no of rounds not less than the one in the tournament form!!!"
+        "Enter the tournament form and play the minimum no of rounds not less than the one entered in the tournament form!!!"
       );
   };
 
   //Submit Results Button after the round games list - to enter the round games result
   const roundResultHandler = () => {
-    let newState = { ...tourState };
+    let newState = cloneDeep(tourState);
     let noPlayers = newState.players.length;
     let gamesPerRound = Math.floor(noPlayers / 2);
 

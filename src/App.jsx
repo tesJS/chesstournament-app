@@ -44,8 +44,8 @@ const App = () => {
         dispatch(httpActions.removeError());
       })
       .catch((error) => {
-        console.log("Error occured from catch-" + error);
-        dispatch(httpActions.displayError(error.message));
+        //console.log("Error occured from catch-" + error);
+        dispatch(httpActions.displayError(error));
       });
   }, []);
 
@@ -58,7 +58,9 @@ const App = () => {
 
     let player = new Player(inputName.value, inputElo.value, inputClub.value);
 
-    PlayerService.postPlayer(player); // save it to database
+    PlayerService.postPlayer(player).catch((error) => {
+      dispatch(httpActions.displayError(error.message));
+    }); // save it to database
 
     if (inputName.value !== "" && inputElo.value !== "") {
       dispatch(tournamentActions.addPlayer(player));
@@ -87,8 +89,6 @@ const App = () => {
     let tourid = cloneDeep(touridField.value);
 
     tourForm = new Tournament(noplayers, tourdetails, norounds, tourid);
-    tourForm.tournamentID = tourid; // to link registering the tournamentresults table  to this tournament
-    tourForm.tournamentRounds = norounds; // to link registering the tournamentresults table  to this tournament
     tourdetailsField.value = "";
     noplayersField.value = "";
     noroundsField.value = "";
