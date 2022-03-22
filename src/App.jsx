@@ -11,7 +11,7 @@ import Tournament from "./data/Tournament";
 import cloneDeep from "clone-deep";
 import ContactForm from "./components/ContactForm";
 import { httpActions } from "./store/httpReducer";
-import { tournamentActions } from "./store/tournamentReducer";
+import { loadPlayers, tournamentActions } from "./store/tournamentReducer";
 
 const App = () => {
   const players = useSelector((state) => state.tournament.players);
@@ -25,28 +25,11 @@ const App = () => {
 
   // run once all components are loaded to displa players list from the database or show errors if not succeeded
 
+  //ajax request is sent by PlayersService to Postgres database to fetch players data
+  // Here I use Spring boot for backend control program so Backend programs must run first to fetch data
+  // Otherwise Network error is thrown
   useEffect(() => {
-    //ajax request is sent by PlayersService to Postgres database to fetch players data
-    // Here I use Spring boot for backend control program so Backend programs must run first to fetch data
-    // Otherwise Network error is thrown
-    PlayerService.getPlayers()
-      .then((response) => {
-        let tourPlayers = [];
-
-        for (let i = 0; i < response.length; i++) {
-          tourPlayers.push(
-            new Player(response[i].name, response[i].elo, response[i].club)
-          );
-          tourPlayers[i].id = response[i].id;
-        }
-
-        dispatch(tournamentActions.loadPlayers(tourPlayers));
-        dispatch(httpActions.removeError());
-      })
-      .catch((error) => {
-        //console.log("Error occured from catch-" + error);
-        dispatch(httpActions.displayError(error));
-      });
+    dispatch(loadPlayers());
   }, []);
 
   const submitPlayerHandler = (event) => {

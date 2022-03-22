@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import PlayerService from "../data/PlayerService";
+import { httpActions } from "./httpReducer";
 
 const initialState = {
   players: [],
@@ -124,6 +126,27 @@ export const tournamentReducer = createSlice({
     },
   },
 });
+
+export const loadPlayers = () => async (dispatch) => {
+  PlayerService.getPlayers()
+    .then((response) => {
+      let tourPlayers = [];
+
+      for (let i = 0; i < response.length; i++) {
+        tourPlayers.push(
+          new Player(response[i].name, response[i].elo, response[i].club)
+        );
+        tourPlayers[i].id = response[i].id;
+      }
+
+      dispatch(tournamentReducer.actions.loadPlayers(tourPlayers));
+      dispatch(httpActions.removeError());
+    })
+    .catch((error) => {
+      //console.log("Error occured from catch-" + error);
+      dispatch(httpActions.displayError(error.message));
+    });
+};
 
 export const tournamentActions = tournamentReducer.actions;
 
