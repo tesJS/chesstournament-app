@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import PlayerService from "../data/PlayerService";
 import { httpActions } from "./httpReducer";
+import Player from "../data/Player";
+import cloneDeep from "clone-deep";
 
 const initialState = {
   players: [],
@@ -54,7 +56,7 @@ export const tournamentReducer = createSlice({
       let result = obj.result;
 
       let str = obj.id;
-      let players = state.players;
+      let players = cloneDeep(state.players);
       let ids = str.split(" ");
 
       let player1 = players.filter((el) => {
@@ -79,6 +81,8 @@ export const tournamentReducer = createSlice({
           player2[0].setScore(0.5);
           break;
       }
+
+      state.players = players;
     },
     updateStoreResults(state, action) {
       let event = action.payload;

@@ -74,7 +74,7 @@ const LowerSection = function (props) {
     }
   };
 
-  //called everytime the result selection list is called
+  //called everytime the result selection list is clicked
   // used to set the players score according to the selected score value win lose or draw
   const selectProsessor = (obj) => {
     dispatch(tournamentActions.selectProsessor(obj));

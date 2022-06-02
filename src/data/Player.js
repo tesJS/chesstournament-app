@@ -4,7 +4,7 @@ export default class Player {
     this.elo = elo;
     this.club = club;
     this.oppList = [];
-    this.id = '';
+    this.id = "";
     this.score = 0;
     this.whiteTurns = 0;
   }
@@ -17,10 +17,10 @@ export default class Player {
   getId() {
     return this.id;
   }
-  
+
   setOpponentList(opp) {
-    this.oppList.push(opp);
-    opp.oppList.push(this);
+    this.oppList.push(opp.name);
+    opp.oppList.push(this.name);
   }
   getOpponentList() {
     return this.oppList;

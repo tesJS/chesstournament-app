@@ -1,5 +1,5 @@
 import cloneDeep from "clone-deep";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./ListPlayers.css";
 
@@ -8,9 +8,10 @@ const ListPlayers = (props) => {
   let players = useSelector((state) => state.tournament.players);
   let listHtml, playersList;
 
+  players = cloneDeep(players);
+
   console.log("In ListPlayers Section. Players List: ");
   console.log(players);
-  players = cloneDeep(players);
 
   if (players.length) {
     players.sort(function (pl1, pl2) {
@@ -36,10 +37,11 @@ const ListPlayers = (props) => {
       </p>
     );
   }
+
   return (
     <div>
       <span>List of Players</span>
-      <div style={{ marginBottom: 25 }}></div>
+      <div style={{ marginBottom: 25 }}>{}</div>
       {players.length ? playersList : listHtml}
     </div>
   );
