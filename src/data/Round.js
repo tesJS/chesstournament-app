@@ -193,7 +193,7 @@ class Round {
             return el.player1.id == player1.id && el.player2.id == player2.id;
           });
           game = game[0];
-          game.player1.opponentsList.push(player2.name);
+          game.player1.oppList.push(player2.name);
 
           roundGames.push(game);
           mid++;
@@ -262,7 +262,7 @@ class Round {
 
         if (roundGames.length === gamesPerRound) {
           roundGames.forEach((el) => {
-            el.player1.opponentsList.push(el.player2.name);
+            el.player1.oppList.push(el.player2.name);
           });
           isNotPaired = false;
         } else if (counter < 10) {

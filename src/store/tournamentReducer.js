@@ -58,6 +58,8 @@ export const tournamentReducer = createSlice({
       let player2 = players.filter((el) => {
         return el.id == ids[1];
       });
+      player1[0].oppList.push(player2[0].name);
+      player2[0].oppList.push(player1[0].name);
 
       switch (result) {
         case "win":
@@ -130,7 +132,7 @@ export const loadPlayers = () => async (dispatch) => {
           club: response[i].club,
           score: 0,
           whiteTurns: 0,
-          opponentsList: [],
+          oppList: [],
         });
       }
 

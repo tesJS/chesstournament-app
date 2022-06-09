@@ -33,7 +33,7 @@ const App = () => {
   // Otherwise Network error is thrown
   useEffect(() => {
     if (state.players.length < 2) dispatch(loadPlayers());
-  }, [state.players]);
+  }, []);
 
   const submitPlayerHandler = (event) => {
     event.preventDefault();
