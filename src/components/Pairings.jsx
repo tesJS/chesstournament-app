@@ -1,10 +1,20 @@
 import React from "react";
 
+import { useDispatch } from "react-redux";
 import "./Pairings.css";
-
+import { tournamentActions } from "../store/tournamentReducer";
 const Pairings = (props) => {
-  const selected = (event) => {
-    props.selected(event);
+  const dispatch = useDispatch();
+  //select option handler
+  const selectHandler = (event) => {
+    let result = event.target.value;
+    let str = event.target.parentNode.className;
+
+    let obj = {};
+    let ids = str.split(" ");
+    obj.id = ids;
+
+    dispatch(tournamentActions.updateStoreResults({ str, result }));
   };
 
   return (
@@ -13,7 +23,7 @@ const Pairings = (props) => {
         {props.player1}
       </label>
       <select
-        onChange={selected}
+        onChange={selectHandler}
         className="item1"
         name="result"
         id="result"

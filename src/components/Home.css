@@ -27,8 +27,8 @@
   grid-column: 1;
 }
 .lowerHalfSection {
-  position: fixed;
-  top: 74vh;
+  position: absolute;
+  top: 70vh;
   left: 0;
   margin-bottom: 1%;
   grid-row: 2;

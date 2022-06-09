@@ -14,7 +14,7 @@ import { httpActions } from "./store/httpReducer";
 import { loadPlayers, tournamentActions } from "./store/tournamentReducer";
 
 const App = () => {
-  const players = useSelector((state) => state.tournament.players);
+  const state = useSelector((state) => state.tournament);
   const dispatch = useDispatch();
 
   const DOMstrings = {
@@ -22,7 +22,10 @@ const App = () => {
     inputElo: "#eloRating",
     inputClub: "#club",
   };
-
+  console.log("====================================");
+  console.log("Tournament State");
+  console.log(state);
+  console.log("====================================");
   // run once all components are loaded to displa players list from the database or show errors if not succeeded
 
   //ajax request is sent by PlayersService to Postgres database to fetch players data
@@ -82,7 +85,6 @@ const App = () => {
 
   return (
     <div className="App">
-      {console.log("App return method called")}
       <Router>
         <div className="header items">
           <h2> Chess Tournament Software </h2>

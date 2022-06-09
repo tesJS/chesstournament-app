@@ -3,6 +3,7 @@ import PlayerService from "../data/PlayerService";
 import { httpActions } from "./httpReducer";
 import Player from "../data/Player";
 import cloneDeep from "clone-deep";
+import uniqid from "uniqid";
 
 const initialState = {
   players: [],
@@ -30,14 +31,6 @@ export const tournamentReducer = createSlice({
       });
       if (!state.pairButtonClicked) {
         state.showResultButtonClicked = true;
-
-        state.pairedList = sortedPlayersByScore.map((el) => {
-          return (
-            <div className="playersList" key={el.id}>
-              {el.name} - {el.score}
-            </div>
-          );
-        });
       } else alert("Enter round results or reset the tournament!");
     },
     update(state, action) {
@@ -68,38 +61,31 @@ export const tournamentReducer = createSlice({
 
       switch (result) {
         case "win":
-          player1[0].setWhiteTurns();
-          player1[0].setScore(1);
+          player1[0].whiteTurns++;
+          player1[0].score++;
           break;
         case "lose":
-          player1[0].setWhiteTurns();
-          player2[0].setScore(1);
+          player1[0].whiteTurns++;
+          player2[0].score++;
           break;
         case "draw":
-          player1[0].setWhiteTurns();
-          player1[0].setScore(0.5);
-          player2[0].setScore(0.5);
+          player1[0].whiteTurns++;
+          player1[0].score += 0.5;
+          player2[0].score += 0.5;
           break;
       }
 
       state.players = players;
     },
     updateStoreResults(state, action) {
-      let event = action.payload;
-      let result = event.target.value;
-      let str = event.target.parentNode.className;
-
-      let obj = {};
-      let ids = str.split(" ");
-      obj.id = ids;
+      let result = action.payload.result;
+      let str = action.payload.str;
 
       let searchIndex = state.storeResults.findIndex((el) => {
         return el.id == str;
       });
       if (searchIndex >= 0) state.storeResults.splice(searchIndex, 1);
       if (result !== "default") state.storeResults.push({ id: str, result });
-      console.log("State.storeResults ");
-      console.log({ id: str, result });
     },
     resetHandler(state) {
       let pairButton = document.querySelector(".pairButton");
@@ -137,17 +123,21 @@ export const loadPlayers = () => async (dispatch) => {
       let tourPlayers = [];
 
       for (let i = 0; i < response.length; i++) {
-        tourPlayers.push(
-          new Player(response[i].name, response[i].elo, response[i].club)
-        );
-        tourPlayers[i].id = response[i].id;
+        tourPlayers.push({
+          id: response[i].id,
+          name: response[i].name,
+          elo: response[i].elo,
+          club: response[i].club,
+          score: 0,
+          whiteTurns: 0,
+          opponentsList: [],
+        });
       }
 
       dispatch(tournamentReducer.actions.loadPlayers(tourPlayers));
       dispatch(httpActions.removeError());
     })
     .catch((error) => {
-      //console.log("Error occured from catch-" + error);
       dispatch(httpActions.displayError(error.message));
     });
 };

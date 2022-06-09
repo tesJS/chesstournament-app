@@ -16,11 +16,6 @@ const LowerSection = function (props) {
   const players = useSelector((state) => state.tournament.players);
   const tourState = useSelector((state) => state.tournament);
 
-  //select option handler
-  const selectHandler = (e) => {
-    dispatch(tournamentActions.updateStoreResults(e));
-  };
-
   //Save each players score to tournamentResults table in chesstourDB
   const saveButtonHandler = (event) => {
     let localTourForm = cloneDeep(tourForm);
@@ -50,7 +45,7 @@ const LowerSection = function (props) {
       );
   };
 
-  //Submit Results Button after the round games list - to enter the round games result
+  //*******************************Submit Results Button after the round games list - to enter the round games result
   const roundResultHandler = () => {
     let newState = cloneDeep(tourState);
     let noPlayers = newState.players.length;
@@ -88,10 +83,11 @@ const LowerSection = function (props) {
     dispatch(tournamentActions.resetHandler());
   };
 
-  //Pair Players Buton-Handler
+  //**********************************Pair Players Buton-Handler**********************************************
   const pairedHandler = () => {
     let newState = cloneDeep(tourState),
-      currentRoundGames;
+      currentRoundGames,
+      serializedCurrentRoundGames;
     newState.showResultButtonClicked = false;
 
     if (newState.counter === 1) {
@@ -110,23 +106,18 @@ const LowerSection = function (props) {
     //if round games   generator does not return null
     if (currentRoundGames != null) {
       newState.counter++;
-      newState.currentRoundGames.push(currentRoundGames);
+      //For redux store serializabillity sake I convert currentRoundGames to an array of games objects
+      // and then set pairedList array for the PairingListSection
+      serializedCurrentRoundGames = currentRoundGames.map((game) => ({
+        player1: game.player1,
+        player2: game.player2,
+      }));
+      newState.pairedList = serializedCurrentRoundGames;
+      newState.currentRoundGames.push(serializedCurrentRoundGames);
       newState.pairButtonClicked = true;
-      newState.submitResultButtonClicked = false;
-      newState.pairedList = []; // clear pairedList array in case show Button is clicked before this pair button
 
-      //store list of paired players to pairedList variable
-      for (var i = 0; i < currentRoundGames.length; i++) {
-        newState.pairedList.push(
-          <Pairings
-            key={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
-            player1={currentRoundGames[i].player1.name}
-            player2={currentRoundGames[i].player2.name}
-            players={`${currentRoundGames[i].player1.id} ${currentRoundGames[i].player2.id}`}
-            selected={selectHandler}
-          ></Pairings>
-        );
-      }
+      newState.submitResultButtonClicked = false;
+
       let pairButton = document.querySelector(".pairButton");
       let saveButton = document.querySelector(".showSaveButton");
       pairButton.disabled = true;

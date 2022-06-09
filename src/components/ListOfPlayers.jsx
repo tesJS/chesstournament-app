@@ -10,9 +10,6 @@ const ListPlayers = (props) => {
 
   players = cloneDeep(players);
 
-  console.log("In ListPlayers Section. Players List: ");
-  console.log(players);
-
   if (players.length) {
     players.sort(function (pl1, pl2) {
       return pl2.score - pl1.score;
@@ -21,7 +18,7 @@ const ListPlayers = (props) => {
     playersList = players.map((el) => {
       return (
         <div className="list" key={el.id}>
-          {el.name} {el.elo} {el.club} {el.score} {el.whiteTurns}w
+          {el.name} {el.elo} {el.club} {el.score}
         </div>
       );
     });
