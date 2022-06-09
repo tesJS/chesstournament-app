@@ -32,8 +32,8 @@ const App = () => {
   // Here I use Spring boot for backend control program so Backend programs must run first to fetch data
   // Otherwise Network error is thrown
   useEffect(() => {
-    dispatch(loadPlayers());
-  }, []);
+    if (state.players.length < 2) dispatch(loadPlayers());
+  }, [state.players]);
 
   const submitPlayerHandler = (event) => {
     event.preventDefault();
