@@ -1,9 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
-import PlayerService from "../data/PlayerService";
-import { httpActions } from "./httpReducer";
-import Player from "../data/Player";
-import cloneDeep from "clone-deep";
-import uniqid from "uniqid";
+import { createSlice } from '@reduxjs/toolkit';
+import PlayerService from '../data/PlayerService';
+import { httpActions } from './httpReducer';
+import Player from '../data/Player';
+import cloneDeep from 'clone-deep';
+import uniqid from 'uniqid';
 
 const initialState = {
   players: [],
@@ -22,7 +22,7 @@ const initialState = {
 };
 
 export const tournamentReducer = createSlice({
-  name: "tournament",
+  name: 'tournament',
   initialState,
   reducers: {
     showResult(state) {
@@ -31,7 +31,7 @@ export const tournamentReducer = createSlice({
       });
       if (!state.pairButtonClicked) {
         state.showResultButtonClicked = true;
-      } else alert("Enter round results or reset the tournament!");
+      } else alert('Enter round results or reset the tournament!');
     },
     update(state, action) {
       state.counter = action.payload.counter;
@@ -50,27 +50,27 @@ export const tournamentReducer = createSlice({
 
       let str = obj.id;
       let players = cloneDeep(state.players);
-      let ids = str.split(" ");
+      let ids = str.split(' ');
 
-      let player1 = players.filter((el) => {
+      let player1 = players.filter(el => {
         return el.id == ids[0];
       });
-      let player2 = players.filter((el) => {
+      let player2 = players.filter(el => {
         return el.id == ids[1];
       });
       player1[0].oppList.push(player2[0].name);
       player2[0].oppList.push(player1[0].name);
 
       switch (result) {
-        case "win":
+        case 'win':
           player1[0].whiteTurns++;
           player1[0].score++;
           break;
-        case "lose":
+        case 'lose':
           player1[0].whiteTurns++;
           player2[0].score++;
           break;
-        case "draw":
+        case 'draw':
           player1[0].whiteTurns++;
           player1[0].score += 0.5;
           player2[0].score += 0.5;
@@ -83,14 +83,14 @@ export const tournamentReducer = createSlice({
       let result = action.payload.result;
       let str = action.payload.str;
 
-      let searchIndex = state.storeResults.findIndex((el) => {
+      let searchIndex = state.storeResults.findIndex(el => {
         return el.id == str;
       });
       if (searchIndex >= 0) state.storeResults.splice(searchIndex, 1);
-      if (result !== "default") state.storeResults.push({ id: str, result });
+      if (result !== 'default') state.storeResults.push({ id: str, result });
     },
     resetHandler(state) {
-      let pairButton = document.querySelector(".pairButton");
+      let pairButton = document.querySelector('.pairButton');
       pairButton.disabled = false;
       state.counter = 1;
       state.resetButtonClicked = false;
@@ -100,12 +100,13 @@ export const tournamentReducer = createSlice({
       state.currentRoundGames = [];
       state.showPlayersList = false;
       state.tournamentForm = null;
-      state.players.forEach((el) => {
+      state.players.forEach(el => {
         el.score = 0; //each player's score is reset
         el.oppList = []; //each player's list is reset
         el.whiteTurns = 0; //each player's list is reset
       });
       state.pairedList = [];
+      state.storeResults = [];
     },
     addTournamentForm(state, action) {
       state.tournamentForm = action.payload;
@@ -119,9 +120,9 @@ export const tournamentReducer = createSlice({
   },
 });
 
-export const loadPlayers = () => async (dispatch) => {
+export const loadPlayers = () => async dispatch => {
   PlayerService.getPlayers()
-    .then((response) => {
+    .then(response => {
       let tourPlayers = [];
 
       for (let i = 0; i < response.length; i++) {
@@ -139,7 +140,7 @@ export const loadPlayers = () => async (dispatch) => {
       dispatch(tournamentReducer.actions.loadPlayers(tourPlayers));
       dispatch(httpActions.removeError());
     })
-    .catch((error) => {
+    .catch(error => {
       dispatch(httpActions.displayError(error.message));
     });
 };
