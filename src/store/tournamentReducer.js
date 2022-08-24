@@ -58,22 +58,33 @@ export const tournamentReducer = createSlice({
       let player2 = players.filter((el) => {
         return el.id == ids[1];
       });
+      
+
+      //sets the players opponent list and color counts
+      player1[0].whiteTurns++;
       player1[0].oppList.push(player2[0].name);
       player2[0].oppList.push(player1[0].name);
 
+      let curOppIndex=player1[0].oppList.length-1
+
       switch (result) {
         case "win":
-          player1[0].whiteTurns++;
-          player1[0].score++;
+          player1[0].score++;          
+          player1[0].oppList[curOppIndex]+=" - win (w)";
+          player2[0].oppList[curOppIndex]+=" - lose (b)";
           break;
         case "lose":
-          player1[0].whiteTurns++;
+          player1[0].oppList[curOppIndex]+=" - lose (w)";
+          player2[0].oppList[curOppIndex]+=" - win (b)";          
           player2[0].score++;
           break;
         case "draw":
-          player1[0].whiteTurns++;
+          player1[0].oppList[curOppIndex]+=" - draw (w)";
+          player2[0].oppList[curOppIndex]+=" - draw (b)";          
           player1[0].score += 0.5;
           player2[0].score += 0.5;
+          break;
+        default:
           break;
       }
 

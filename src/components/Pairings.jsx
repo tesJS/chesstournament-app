@@ -3,6 +3,8 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import "./Pairings.css";
 import { tournamentActions } from "../store/tournamentReducer";
+
+//represents each paring from the list of pairs of players of the current round 
 const Pairings = (props) => {
   const dispatch = useDispatch();
   //select option handler
