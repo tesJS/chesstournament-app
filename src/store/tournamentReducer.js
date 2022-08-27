@@ -94,11 +94,12 @@ export const tournamentReducer = createSlice({
       let result = action.payload.result;
       let str = action.payload.str;
 
+      //searchIndex searches the index if storeresults is not empty or -1 
       let searchIndex = state.storeResults.findIndex((el) => {
-        return el.id == str;
+        return el.id ===str;
       });
-      if (searchIndex >= 0) state.storeResults.splice(searchIndex, 1);
-      if (result !== "default") state.storeResults.push({ id: str, result });
+      if (searchIndex >= 0) state.storeResults.splice(searchIndex, 1);// removes the previous selected result of the same players
+      if (result !== "default") state.storeResults.push({ id: str, result });// push the selected to the state -> storeResults
     },
     resetHandler(state) {
       let pairButton = document.querySelector(".pairButton");
@@ -109,6 +110,8 @@ export const tournamentReducer = createSlice({
       state.submitResultButtonClicked = false;
       state.pairButtonClicked = false;
       state.currentRoundGames = [];
+      state.storeResults = [];
+      state.currentRoundGames=[];
       state.showPlayersList = false;
       state.tournamentForm = null;
       state.players.forEach((el) => {

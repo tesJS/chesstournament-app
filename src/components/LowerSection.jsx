@@ -19,30 +19,35 @@ const LowerSection = function (props) {
   //Save each players score to tournamentResults table in chesstourDB
   const saveButtonHandler = (event) => {
     let localTourForm = cloneDeep(tourForm);
-    let tourid = localTourForm.tourid;
-    let norounds = localTourForm.norounds;
-    let playerid;
 
-    //If the user enters tournament id and the minimum number of rounds played is equal or greater than the one filled in the tournament form
-    if (tourid !== "" && counter >= norounds) {
-      try {
-        players.forEach((el) => {
-          playerid = parseInt(el.id);
-          PlayerService.postTournamentResult(
-            new TournamentResult(playerid, tourid, el.score.toString())
-          ).catch((error) => {
-            dispatch(httpActions.displayError(error));
+    
+//check if the tournaent form is submited or not
+    if (localTourForm) {
+      let tourid = localTourForm.tourid;
+      let norounds = localTourForm.norounds;
+      let playerid;
+      //If the user enters tournament id and the minimum number of rounds played is equal or greater than the one 
+      //filled in the tournament form
+      if (tourid !== "" && counter >= norounds) {
+        try {
+          players.forEach((el) => {
+            playerid = parseInt(el.id);
+            PlayerService.postTournamentResult(
+              new TournamentResult(playerid, tourid, el.score.toString())
+            ).catch((error) => {
+              dispatch(httpActions.displayError(error));
+            });
           });
-        });
-        PlayerService.postTournament(localTourForm);
-        dispatch(tournamentActions.resetHandler()); //and then reset the page
-      } catch (error) {
-        dispatch(httpActions.displayError(error.message));
-      }
-    } else
-      alert(
-        "Enter the tournament form and play the minimum no of rounds not less than the one entered in the tournament form!!!"
-      );
+          PlayerService.postTournament(localTourForm);
+          dispatch(tournamentActions.resetHandler()); //and then reset the page
+        } catch (error) {
+          dispatch(httpActions.displayError(error.message));
+        }
+      } else
+        alert(
+          "Enter the tournament form id and play the minimum no of rounds not less than the one entered in the tournament form!!!"
+        );
+    } else alert("Enter the tournament form field on the tournament page!!!");
   };
 
   //*******************************Submit Results Button after the round games list - to enter the round games result
