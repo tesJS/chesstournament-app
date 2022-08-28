@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from "react";
+import React from "react";
 import uniqid from "uniqid";
 import { useDispatch } from "react-redux";
 import "./Pairings.css";
