@@ -1,11 +1,10 @@
-import cloneDeep from "clone-deep";
-import React, { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
-import "./ListPlayers.css";
+import cloneDeep from "clone-deep";
+import Player from "./PlayerC";
 
-const ListPlayers = (props) => {
+function ListDBPlayers(props) {
   const httpErrorMessage = useSelector((state) => state.http.httpErrorMessage);
-  let players = useSelector((state) => state.tournament.players);
+  let players = useSelector((state) => state.tournament.dbPlayers);
   let listHtml, playersList;
 
   players = cloneDeep(players);
@@ -18,7 +17,14 @@ const ListPlayers = (props) => {
     playersList = players.map((el) => {
       return (
         <div className="list" key={el.id}>
-          {el.name} {el.elo} {el.club} {el.score}
+          <Player
+            key={el.id}
+            id={el.id}
+            name={el.name}
+            elo={el.elo}
+            club={el.club}
+            parent="DBPlayersList"
+          ></Player>
         </div>
       );
     });
@@ -34,13 +40,13 @@ const ListPlayers = (props) => {
       </p>
     );
   }
-
   return (
-    <div>
+    <div className="lp-main">
       <span>List of Players</span>
       <div style={{ marginBottom: 25 }}>{}</div>
       {players.length ? playersList : listHtml}
     </div>
   );
-};
-export default ListPlayers;
+}
+
+export default ListDBPlayers;

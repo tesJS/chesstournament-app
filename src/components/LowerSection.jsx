@@ -8,6 +8,7 @@ import PlayerService from "../data/PlayerService";
 import { tournamentActions } from "../store/tournamentReducer";
 import cloneDeep from "clone-deep";
 import { httpActions } from "../store/httpReducer";
+import { isNull } from "underscore";
 
 const LowerSection = function (props) {
   const dispatch = useDispatch();
@@ -58,27 +59,78 @@ const LowerSection = function (props) {
 
     if (newState.pairButtonClicked) {
       let pairButton = document.querySelector(".pairButton");
-      pairButton.disabled = false;
+      pairButton.disabled = false;}
+
+      //if all games results are selected
       if (newState.storeResults.length === gamesPerRound) {
-        newState.storeResults.forEach((el) => {
-          selectProsessor(el);
+
+        //update the selected result for the corresponding players
+      
+        newState.storeResults.forEach(el => {       
+       
+          let obj = el;
+          let result = obj.result;
+    
+          let str = obj.id;
+          let players = newState.players;
+          let ids = str.split(" ");
+    
+          let player1 = players.filter((el) => {
+            return el.id.toString() === ids[0];
+          });
+          let player2 = players.filter((el) => {
+            return el.id.toString() === ids[1];
+          });
+          
+          //sets the players opponent list and color counts
+          player1[0].whiteTurns++;
+          player1[0].oppList.push(player2[0].name);
+          player2[0].oppList.push(player1[0].name);
+    
+          let curOppIndex=player1[0].oppList.length-1
+    
+          switch (result) {
+            case "win":
+              player1[0].score++;          
+              player1[0].oppList[curOppIndex]+=" - win (w)";
+              player2[0].oppList[curOppIndex]+=" - lose (b)";
+              break;
+            case "lose":
+              player1[0].oppList[curOppIndex]+=" - lose (w)";
+              player2[0].oppList[curOppIndex]+=" - win (b)";          
+              player2[0].score++;
+              break;
+            case "draw":
+              player1[0].oppList[curOppIndex]+=" - draw (w)";
+              player2[0].oppList[curOppIndex]+=" - draw (b)";          
+              player1[0].score += 0.5;
+              player2[0].score += 0.5;
+              break;
+            default:
+              break;
+          }
+
         });
+
+        if(newState.byePlayer)
+        {
+           newState.players.forEach(el=>{
+          if(newState.byePlayer.id===el.id)
+          el.score+=1;
+        });
+        }
+       
         newState.pairedList = [];
         newState.submitResultButtonClicked = true;
         newState.pairButtonClicked = false;
         newState.storeResults = [];
-        dispatch(tournamentActions.update(newState));
-      } else {
+        dispatch(tournamentActions.submitButtonUpdate(newState));
+      } 
+      
+      else {
         window.alert("Enter all games' results!");
       }
-    }
-  };
-
-  //called everytime the result selection list is clicked
-  // used to set the players score according to the selected score value win lose or draw
-  const selectProsessor = (obj) => {
-    dispatch(tournamentActions.selectProsessor(obj));
-  };
+    };
 
   const showResultHandler = () => {
     dispatch(tournamentActions.showResult());
@@ -93,12 +145,14 @@ const LowerSection = function (props) {
     let newState = cloneDeep(tourState),
       currentRoundGames,
       serializedCurrentRoundGames;
+      let byePlayer=null;
     newState.showResultButtonClicked = false;
 
     if (newState.counter === 1) {
       let firstRound = new Round(newState.players, newState.counter, null);
-      currentRoundGames = firstRound.generateRoundGames();
-      //newState.players = firstRound.getPlayers(); // to validate the list of players participating in the round
+      currentRoundGames = firstRound.generateRoundGames(); 
+      byePlayer=firstRound.getByePlayer();     
+
     } else {
       let otherRounds = new Round(
         newState.players,
@@ -106,6 +160,7 @@ const LowerSection = function (props) {
         newState.currentRoundGames
       );
       currentRoundGames = otherRounds.generateRoundGames();
+      byePlayer=otherRounds.getByePlayer(); 
     }
 
     //if round games   generator does not return null
@@ -120,7 +175,7 @@ const LowerSection = function (props) {
       newState.pairedList = serializedCurrentRoundGames;
       newState.currentRoundGames.push(serializedCurrentRoundGames);
       newState.pairButtonClicked = true;
-
+      newState.byePlayer=byePlayer;
       newState.submitResultButtonClicked = false;
 
       let pairButton = document.querySelector(".pairButton");
@@ -132,7 +187,9 @@ const LowerSection = function (props) {
         newState.tournamentRounds !== -1
       )
         saveButton.disabled = false;
-      dispatch(tournamentActions.update(newState));
+
+
+      dispatch(tournamentActions.pairButtonUpdate(newState));
     }
     //if round games   generator does return null, max round reached
     else {

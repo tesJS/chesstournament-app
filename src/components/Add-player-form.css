@@ -1,3 +1,10 @@
+.main-section-addplayer{
+  display: flex;
+  flex-direction: row;
+  column-gap: 3rem;
+}
+
+
 .postButton {
     width: 120px;
     height:40px;

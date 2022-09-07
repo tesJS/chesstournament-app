@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import PlayerService from "../data/PlayerService";
+import UserSevice from "../data/UserSevice";
 import { httpActions } from "./httpReducer";
-import Player from "../data/Player";
-import cloneDeep from "clone-deep";
-import uniqid from "uniqid";
+
 
 const initialState = {
+  login:false,
   players: [],
+  dbPlayers:[],
+  byePlayer:{},
   counter: 1,
   finalRound: false,
   showResult: false,
@@ -17,6 +19,7 @@ const initialState = {
   submitResultButtonClicked: false,
   resetButtonClicked: false,
   pairedList: [],
+  signup:false,
   storeResults: [],
   tournamentForm: null,
 };
@@ -25,6 +28,12 @@ export const tournamentReducer = createSlice({
   name: "tournament",
   initialState,
   reducers: {
+    signup(state,action){
+      state.signup=action.payload;
+    },
+    login(state,action){
+      state.login=action.payload;
+    },
     showResult(state) {
       let sortedPlayersByScore = state.players.sort(function (pl1, pl2) {
         return pl2.score - pl1.score;
@@ -33,63 +42,40 @@ export const tournamentReducer = createSlice({
         state.showResultButtonClicked = true;
       } else alert("Enter round results or reset the tournament!");
     },
-    update(state, action) {
+    //pair button update operations
+    pairButtonUpdate(state, action) {
       state.counter = action.payload.counter;
       state.currentRoundGames = action.payload.currentRoundGames;
       state.pairButtonClicked = action.payload.pairButtonClicked;
-
+      state.byePlayer=action.payload.byePlayer;
       state.submitResultButtonClicked =
         action.payload.submitResultButtonClicked;
       state.pairedList = action.payload.pairedList;
       state.storeResults = action.payload.storeResults;
       state.showResultButtonClicked = action.payload.showResultButtonClicked;
+/* console.log(action.payload);
+      state=cloneDeep( action.payload);  */ 
     },
-    selectProsessor(state, action) {
-      let obj = action.payload;
-      let result = obj.result;
 
-      let str = obj.id;
-      let players = cloneDeep(state.players);
-      let ids = str.split(" ");
+    submitButtonUpdate(state,action){
 
-      let player1 = players.filter((el) => {
-        return el.id == ids[0];
-      });
-      let player2 = players.filter((el) => {
-        return el.id == ids[1];
-      });
-      
+      state.counter = action.payload.counter;
+      state.players=action.payload.players;
+      state.currentRoundGames = action.payload.currentRoundGames;
+      state.pairButtonClicked = action.payload.pairButtonClicked;
+      state.byePlayer=action.payload.byePlayer;
+      state.submitResultButtonClicked =
+        action.payload.submitResultButtonClicked;
+      state.pairedList = action.payload.pairedList;
+      state.storeResults = action.payload.storeResults;
+      state.showResultButtonClicked = action.payload.showResultButtonClicked;  
+          
+        
+       
+        },
+    
 
-      //sets the players opponent list and color counts
-      player1[0].whiteTurns++;
-      player1[0].oppList.push(player2[0].name);
-      player2[0].oppList.push(player1[0].name);
-
-      let curOppIndex=player1[0].oppList.length-1
-
-      switch (result) {
-        case "win":
-          player1[0].score++;          
-          player1[0].oppList[curOppIndex]+=" - win (w)";
-          player2[0].oppList[curOppIndex]+=" - lose (b)";
-          break;
-        case "lose":
-          player1[0].oppList[curOppIndex]+=" - lose (w)";
-          player2[0].oppList[curOppIndex]+=" - win (b)";          
-          player2[0].score++;
-          break;
-        case "draw":
-          player1[0].oppList[curOppIndex]+=" - draw (w)";
-          player2[0].oppList[curOppIndex]+=" - draw (b)";          
-          player1[0].score += 0.5;
-          player2[0].score += 0.5;
-          break;
-        default:
-          break;
-      }
-
-      state.players = players;
-    },
+   
     updateStoreResults(state, action) {
       let result = action.payload.result;
       let str = action.payload.str;
@@ -114,18 +100,32 @@ export const tournamentReducer = createSlice({
       state.currentRoundGames=[];
       state.showPlayersList = false;
       state.tournamentForm = null;
-      state.players.forEach((el) => {
+      /* state.players.forEach((el) => {
         el.score = 0; //each player's score is reset
         el.oppList = []; //each player's list is reset
         el.whiteTurns = 0; //each player's list is reset
-      });
+      }); */
+      state.players=[];
       state.pairedList = [];
     },
     addTournamentForm(state, action) {
       state.tournamentForm = action.payload;
     },
     loadPlayers(state, action) {
-      state.players = action.payload;
+      state.dbPlayers = action.payload;
+    },
+    addTourPlayersList(state,action){
+      state.players.push(...action.payload);
+    },
+    removeTourPlayersList(state,action){
+      let player=action.payload;
+      console.log("Inside  removeTourPlayersList");
+      console.log(player[0]);
+      state.players=state.players.filter(plr=>player[0].id!==plr.id);
+      console.log(state);
+    },
+    selectAllDBPlayers(state,action){
+      state.players=state.dbPlayers;
     },
     addPlayer(state, action) {
       state.players.push(action.payload);
@@ -150,6 +150,7 @@ export const loadPlayers = () => async (dispatch) => {
         });
       }
 
+
       dispatch(tournamentReducer.actions.loadPlayers(tourPlayers));
       dispatch(httpActions.removeError());
     })
@@ -157,6 +158,20 @@ export const loadPlayers = () => async (dispatch) => {
       dispatch(httpActions.displayError(error.message));
     });
 };
+
+export const checkUser=(user)=>async (dispatch)=>{
+  console.log("RESPONSE from tournamenReducer");
+    console.log(user);
+
+  UserSevice.checkUserData(user).then((response)=>{
+    console.log("RESPONSE from tournamenReducer");
+    console.log(response);
+    if(response.userPasswordMatches)
+    dispatch(tournamentReducer.actions.login(true));
+  });
+};
+
+
 
 export const tournamentActions = tournamentReducer.actions;
 

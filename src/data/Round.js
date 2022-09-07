@@ -1,7 +1,9 @@
-import Player from "./Player";
+import {used} from 'react';
 import Game from "./Game";
 
 class Round {
+
+  byePlayer=null;
   constructor(listOfPlayers, roundNo, allGamesPlayed) {
     this.listOfPlayers = listOfPlayers;
     this.roundNo = roundNo;
@@ -136,6 +138,9 @@ class Round {
       evenPlayersList,
     };
   }
+  getByePlayer(){
+    return this.byePlayer;
+  }
   generateRoundGames() {
     let player1,
       players1,
@@ -147,7 +152,7 @@ class Round {
       unpairedPlayers = [],
       totalUnpairedPlayers = [],
       bool,
-      byePlayer,
+     
       pairDisorder = false,
       isNotPaired = true;
 
@@ -176,7 +181,9 @@ class Round {
       mid = (noPlayers - 1) / 2;
       noPlayers--;
       gamesPerRound = noPlayers / 2;
-      byePlayer = players.pop();
+      this.byePlayer = players.pop();
+      
+      
     }
     allGames = this.createAllGames(players);
 
@@ -214,7 +221,7 @@ class Round {
         for (let j = 0; j < gamesPerRound; j++) {
           // In case of the last remaining two players in the players array
           //each iteration generates each round game
-          if (players.length == 2) {
+          if (players.length === 2) {
             bool = this.allGamesPlayed.flat().some((el) => {
               return (
                 (el.player1.id === players[0].id ||

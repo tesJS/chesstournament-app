@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./Home.css";
-import ListPlayers from "./ListOfPlayers";
+import ListTourPlayers from "./ListTourPlayers";
 import LowerSection from "./LowerSection";
 import PairingListSection from "./PairingListSection";
 
@@ -15,7 +15,7 @@ function Home(props) {
       </div>
 
       <div className="listOfPlayersSection item">
-        <ListPlayers />
+        <ListTourPlayers />
       </div>
 
       <div className="lowerHalfSection item">
