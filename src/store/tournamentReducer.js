@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import PlayerService from "../data/PlayerService";
-import UserSevice from "../data/UserSevice";
+import UserService from "../data/UserSevice";
 import { httpActions } from "./httpReducer";
 
 
 const initialState = {
   login:false,
+  username:"",
   players: [],
   dbPlayers:[],
   byePlayer:{},
@@ -32,7 +33,17 @@ export const tournamentReducer = createSlice({
       state.signup=action.payload;
     },
     login(state,action){
-      state.login=action.payload;
+     
+      state.login=true;
+      state.username=action.payload;
+      
+    },
+    logout(state,action){
+     
+      state.login=false;
+      state.username="";
+      
+      
     },
     showResult(state) {
       let sortedPlayersByScore = state.players.sort(function (pl1, pl2) {
@@ -88,8 +99,7 @@ export const tournamentReducer = createSlice({
       if (result !== "default") state.storeResults.push({ id: str, result });// push the selected to the state -> storeResults
     },
     resetHandler(state) {
-      let pairButton = document.querySelector(".pairButton");
-      pairButton.disabled = false;
+      
       state.counter = 1;
       state.resetButtonClicked = false;
       state.showResultButtonClicked = false;
@@ -133,8 +143,8 @@ export const tournamentReducer = createSlice({
   },
 });
 
-export const loadPlayers = () => async (dispatch) => {
-  PlayerService.getPlayers()
+export const loadPlayers = (username) => async (dispatch) => {
+  PlayerService.getPlayers(username)
     .then((response) => {
       let tourPlayers = [];
 
@@ -159,15 +169,31 @@ export const loadPlayers = () => async (dispatch) => {
     });
 };
 
-export const checkUser=(user)=>async (dispatch)=>{
-  console.log("RESPONSE from tournamenReducer");
+export const checkLoginUser=(user)=>async (dispatch)=>{
+  
     console.log(user);
 
-  UserSevice.checkUserData(user).then((response)=>{
-    console.log("RESPONSE from tournamenReducer");
+  UserService.checkUserData(user).then((response)=>{
+    if(response.userPasswordMatches)    
+    dispatch(tournamentReducer.actions.login(response.user.username));
+  });
+};
+export const checkSignupUser=(user)=>async (dispatch)=>{
+  
+    console.log(user);
+
+  UserService.checkUserData(user).then((response)=>{
+    
+    console.log("checkUserData response");
     console.log(response);
-    if(response.userPasswordMatches)
-    dispatch(tournamentReducer.actions.login(true));
+    //if there are no existing users with the same name then save the user to db and log him in
+    if(response.user==null)  {
+      UserService.postUserData(user).catch((error) => {
+        dispatch(httpActions.displayError(error.message));
+      }); // save the new user to database
+      dispatch(tournamentReducer.actions.login(user.username));
+    }  
+    
   });
 };
 

@@ -16,8 +16,8 @@ class PlayerService {
 
     
     
-    async  getPlayers() {
-            const response=  await axios.get(PLAYERS_REST_API_URL+"/api/list");
+    async  getPlayers(username) {
+            const response=  await axios.get(PLAYERS_REST_API_URL+"/api/list/"+username);
             const data= await response.data;
             return data;
         } 

@@ -13,9 +13,9 @@ class UserService {
         } 
     
 
-    async postUserData(tourResult){
+    async postUserData(user){
     
-     axios.post('http://localhost:8080/user/add', tourResult);
+     axios.post('http://localhost:8080/user/add', user);
      
           
     }

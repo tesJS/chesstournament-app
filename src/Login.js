@@ -1,7 +1,7 @@
 import React, {Fragment,useState  } from "react";
 import { tournamentActions } from "./store/tournamentReducer"
 import { useDispatch, useSelector } from "react-redux";
-import { checkUser } from "./store/tournamentReducer";
+import { checkLoginUser } from "./store/tournamentReducer";
 import "./Main.css";
 import User from "./data/User";
 
@@ -23,7 +23,7 @@ const Login = (props) => {
   const loginFormSubmitHandler = (event) => {
     event.preventDefault();
     let user= new User(username,password,"GUEST");
-    dispatch(checkUser(user));
+    dispatch(checkLoginUser(user));
   };
 
   const handleSignupButton = (event) => {

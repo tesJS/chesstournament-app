@@ -7,6 +7,7 @@ export default class Player {
     this.id = "";
     this.score = 0;
     this.whiteTurns = 0;
+    
   }
   getScore() {
     return this.score;
@@ -31,4 +32,5 @@ export default class Player {
   getWhiteTurns() {
     return this.whiteTurns;
   }
+  
 }
