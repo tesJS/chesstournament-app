@@ -32,8 +32,8 @@ const Main = () => {
   // Here I use Spring boot for backend control program so Backend programs must run first to fetch data
   // Otherwise Network error is thrown
   useEffect(() => {
-     dispatch(loadPlayers());
-  }, [dispatch]);
+     dispatch(loadPlayers(state.username));
+  }, [dispatch,state.username]);
 
   const submitPlayerHandler = (event) => {
     event.preventDefault();
@@ -41,8 +41,8 @@ const Main = () => {
     let inputName = document.querySelector(DOMstrings.inputName);
     let inputElo = document.querySelector(DOMstrings.inputElo);
     let inputClub = document.querySelector(DOMstrings.inputClub);
-
-    let player = new Player(inputName.value, inputElo.value, inputClub.value);
+    let inputUsername=state.username;
+    let player = {name:inputName.value, elo:inputElo.value, club:inputClub.value,username:JSON.stringify(inputUsername)};
 
     PlayerService.postPlayer(player).catch((error) => {
       dispatch(httpActions.displayError(error.message));
@@ -68,13 +68,13 @@ const Main = () => {
     let noplayersField = document.querySelector("#noplayers");
     let noroundsField = document.querySelector("#rounds");
     let touridField = document.querySelector("#tourid");
-
+    let inputUsername=state.username;
     let noplayers = cloneDeep(parseInt(noplayersField.value));
     let tourdetails = cloneDeep(tourdetailsField.value);
     let norounds = cloneDeep(noroundsField.value);
     let tourid = cloneDeep(touridField.value);
 
-    tourForm = new Tournament(noplayers, tourdetails, norounds, tourid);
+    tourForm = new Tournament(noplayers, tourdetails, norounds, tourid,inputUsername);
     tourdetailsField.value = "";
     noplayersField.value = "";
     noroundsField.value = "";
@@ -83,7 +83,10 @@ const Main = () => {
     dispatch(tournamentActions.addTournamentForm(tourForm));
   };
   const logoutHandler = () => {
-    dispatch(tournamentActions.login(false));
+    /* let pairButton = document.querySelector(".pairButton");
+      pairButton.disabled = false; */
+    dispatch(tournamentActions.resetHandler());
+    dispatch(tournamentActions.logout());
     
   };
 
