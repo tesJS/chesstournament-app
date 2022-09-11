@@ -41,6 +41,7 @@ export const tournamentReducer = createSlice({
     logout(state,action){
      
       state.login=false;
+      state.byePlayer={};
       state.username="";
       
       

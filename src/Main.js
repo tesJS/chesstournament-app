@@ -14,6 +14,8 @@ import { httpActions } from "./store/httpReducer";
 import { loadPlayers, tournamentActions } from "./store/tournamentReducer";
 
 const Main = () => {
+  
+  let [playerAdded,setPlayerAdded]=useState(false);
   const state = useSelector((state) => state.tournament);
   const dispatch = useDispatch();
 
@@ -26,7 +28,7 @@ const Main = () => {
   console.log("Tournament State");
   console.log(state);
   console.log("====================================");
-  // run once all components are loaded to displa players list from the database or show errors if not succeeded
+  // run once all components are loaded to display players list from the database or show errors if not succeeded
 
   //ajax request is sent by PlayersService to Postgres database to fetch players data
   // Here I use Spring boot for backend control program so Backend programs must run first to fetch data
@@ -42,11 +44,23 @@ const Main = () => {
     let inputElo = document.querySelector(DOMstrings.inputElo);
     let inputClub = document.querySelector(DOMstrings.inputClub);
     let inputUsername=state.username;
-    let player = {name:inputName.value, elo:inputElo.value, club:inputClub.value,username:JSON.stringify(inputUsername)};
-
-    PlayerService.postPlayer(player).catch((error) => {
+    let player = {name:inputName.value, elo:inputElo.value, club:inputClub.value,username:inputUsername};
+    
+    
+    PlayerService.postPlayer(player) 
+    .then((result)=>{
+      console.log(result);
+      console.log("PlayerService.postPlayer(player) ");
+      dispatch(loadPlayers(state.username));
+    })   
+    .catch((error) => {
+      
+      console.log("PlayerService.postPlayer(player) ");
+      dispatch(loadPlayers(state.username));
       dispatch(httpActions.displayError(error.message));
     }); // save it to database
+
+
 
     if (inputName.value !== "" && inputElo.value !== "") {
       //dispatch(tournamentActions.addPlayer(player));
@@ -74,7 +88,7 @@ const Main = () => {
     let norounds = cloneDeep(noroundsField.value);
     let tourid = cloneDeep(touridField.value);
 
-    tourForm = new Tournament(noplayers, tourdetails, norounds, tourid,inputUsername);
+    tourForm = new Tournament(noplayers, tourdetails, norounds, tourid, inputUsername);
     tourdetailsField.value = "";
     noplayersField.value = "";
     noroundsField.value = "";

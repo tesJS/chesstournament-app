@@ -9,7 +9,7 @@ class PlayerService {
 
      async postPlayer(player){
         
-       const data= axios.post(PLAYERS_REST_API_URL+'/api/add', player);
+       const data= await axios.post(PLAYERS_REST_API_URL+'/api/add', player);
        return data;
           
     }
@@ -18,7 +18,7 @@ class PlayerService {
     
     async  getPlayers(username) {
             const response=  await axios.get(PLAYERS_REST_API_URL+"/api/list/"+username);
-            const data= await response.data;
+            const data= await response.data;            
             return data;
         } 
 
