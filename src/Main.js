@@ -14,8 +14,7 @@ import { httpActions } from "./store/httpReducer";
 import { loadPlayers, tournamentActions } from "./store/tournamentReducer";
 
 const Main = () => {
-  
-  let [playerAdded,setPlayerAdded]=useState(false);
+  let [playerAdded, setPlayerAdded] = useState(false);
   const state = useSelector((state) => state.tournament);
   const dispatch = useDispatch();
 
@@ -34,8 +33,8 @@ const Main = () => {
   // Here I use Spring boot for backend control program so Backend programs must run first to fetch data
   // Otherwise Network error is thrown
   useEffect(() => {
-     dispatch(loadPlayers(state.username));
-  }, [dispatch,state.username]);
+    dispatch(loadPlayers(state.username));
+  }, [dispatch, state.username]);
 
   const submitPlayerHandler = (event) => {
     event.preventDefault();
@@ -43,24 +42,25 @@ const Main = () => {
     let inputName = document.querySelector(DOMstrings.inputName);
     let inputElo = document.querySelector(DOMstrings.inputElo);
     let inputClub = document.querySelector(DOMstrings.inputClub);
-    let inputUsername=state.username;
-    let player = {name:inputName.value, elo:inputElo.value, club:inputClub.value,username:inputUsername};
-    
-    
-    PlayerService.postPlayer(player) 
-    .then((result)=>{
-      console.log(result);
-      console.log("PlayerService.postPlayer(player) ");
-      dispatch(loadPlayers(state.username));
-    })   
-    .catch((error) => {
-      
-      console.log("PlayerService.postPlayer(player) ");
-      dispatch(loadPlayers(state.username));
-      dispatch(httpActions.displayError(error.message));
-    }); // save it to database
+    let inputUsername = state.username;
+    let player = {
+      name: inputName.value,
+      elo: inputElo.value,
+      club: inputClub.value,
+      username: inputUsername,
+    };
 
-
+    PlayerService.postPlayer(player)
+      .then((result) => {
+        console.log(result);
+        console.log("PlayerService.postPlayer(player) ");
+        dispatch(loadPlayers(state.username));
+      })
+      .catch((error) => {
+        console.log("PlayerService.postPlayer(player) ");
+        dispatch(loadPlayers(state.username));
+        dispatch(httpActions.displayError(error.message));
+      }); // save it to database
 
     if (inputName.value !== "" && inputElo.value !== "") {
       //dispatch(tournamentActions.addPlayer(player));
@@ -82,18 +82,19 @@ const Main = () => {
     let noplayersField = document.querySelector("#noplayers");
     let noroundsField = document.querySelector("#rounds");
     let touridField = document.querySelector("#tourid");
-    let inputUsername=state.username;
+    let username = state.username;
     let noplayers = cloneDeep(parseInt(noplayersField.value));
     let tourdetails = cloneDeep(tourdetailsField.value);
     let norounds = cloneDeep(noroundsField.value);
     let tourid = cloneDeep(touridField.value);
 
-    tourForm = new Tournament(noplayers, tourdetails, norounds, tourid, inputUsername);
-    tourdetailsField.value = "";
-    noplayersField.value = "";
-    noroundsField.value = "";
-    touridField.value = "";
-
+    tourForm = {
+      noplayers,
+      tourdetails,
+      norounds,
+      tourid,
+      username,
+    };
     dispatch(tournamentActions.addTournamentForm(tourForm));
   };
   const logoutHandler = () => {
@@ -101,7 +102,6 @@ const Main = () => {
       pairButton.disabled = false; */
     dispatch(tournamentActions.resetHandler());
     dispatch(tournamentActions.logout());
-    
   };
 
   return (
@@ -137,12 +137,12 @@ const Main = () => {
               </Link>
             </li>
           </ul>
-          <input  
-          onClick={logoutHandler}         
-          className="logout-button"
-          type="button"
-          value={"Log out"}
-        ></input>
+          <input
+            onClick={logoutHandler}
+            className="logout-button"
+            type="button"
+            value={"Log out"}
+          ></input>
         </div>
 
         <div className="body items">
