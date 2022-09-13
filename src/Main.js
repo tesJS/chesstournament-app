@@ -43,31 +43,34 @@ const Main = () => {
     let inputElo = document.querySelector(DOMstrings.inputElo);
     let inputClub = document.querySelector(DOMstrings.inputClub);
     let inputUsername = state.username;
-    let player = {
-      name: inputName.value,
-      elo: inputElo.value,
-      club: inputClub.value,
-      username: inputUsername,
-    };
 
-    PlayerService.postPlayer(player)
-      .then((result) => {
-        console.log(result);
-        console.log("PlayerService.postPlayer(player) ");
-        dispatch(loadPlayers(state.username));
-      })
-      .catch((error) => {
-        console.log("PlayerService.postPlayer(player) ");
-        dispatch(loadPlayers(state.username));
-        dispatch(httpActions.displayError(error.message));
-      }); // save it to database
 
+    
     if (inputName.value !== "" && inputElo.value !== "") {
-      //dispatch(tournamentActions.addPlayer(player));
+
+      let player = {
+        name: inputName.value,
+        elo: inputElo.value,
+        club: inputClub.value,
+        username: inputUsername,
+      };
+  
+      PlayerService.postPlayer(player)
+        .then((result) => {
+          console.log(result);
+          console.log("PlayerService.postPlayer(player) ");
+          dispatch(loadPlayers(state.username));
+        })
+        .catch((error) => {
+          console.log("PlayerService.postPlayer(player) ");
+          dispatch(loadPlayers(state.username));
+          dispatch(httpActions.displayError(error.message));
+        }); // save it to database
+
       inputName.value = "";
       inputElo.value = "";
       inputClub.value = "";
-    } else if (inputName.value === "" && inputElo.value === "") {
+    } else  {
       window.alert("Player's name and elo-rating are required!");
     }
   };
@@ -88,14 +91,26 @@ const Main = () => {
     let norounds = cloneDeep(noroundsField.value);
     let tourid = cloneDeep(touridField.value);
 
-    tourForm = {
+
+    if(tourid!==""&&norounds!==""){
+      tourForm = {
       noplayers,
       tourdetails,
       norounds,
       tourid,
       username,
     };
+    
+    tourdetailsField.value="";
+    noplayersField.value="";
+    noroundsField.value="";
+    touridField.value="";
     dispatch(tournamentActions.addTournamentForm(tourForm));
+    
+    }
+    else 
+    window.alert("Tournament's id and number of rounds are required!");
+    
   };
   const logoutHandler = () => {
     /* let pairButton = document.querySelector(".pairButton");
