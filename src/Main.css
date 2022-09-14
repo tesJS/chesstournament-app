@@ -14,8 +14,6 @@
   margin: 0px;
 }
 
-
-
 .header {
   position: fixed;
   width: 100%;
@@ -53,102 +51,100 @@ div > h2 {
   margin-right: 7rem;
 }
 
-.main-section-addplayer{
+.main-section-addplayer {
   display: flex;
   flex-direction: row;
   column-gap: 3rem;
 }
 
-
 .postButton {
-    width: 120px;
-    height:40px;
-    border-radius: 20%;
-    background-color: dodgerblue;
-    color: white;
-    right: 0px;
-    padding: 5px;
-    margin-top:10px;
-  }
-  span {
-    font-size: large;
-    font-weight: bold;
-    text-decoration: underline;
-    color: rgb(71, 69, 69);
-  }
-  label{
-    font-weight: bold;
-  }
-  
-  .selected-title{
-    font-weight: bold;
-    text-decoration: underline;
-    margin-left: 1rem;
-  }
+  width: 120px;
+  height: 40px;
+  border-radius: 20%;
+  background-color: dodgerblue;
+  color: white;
+  right: 0px;
+  padding: 5px;
+  margin-top: 10px;
+}
+span {
+  font-size: large;
+  font-weight: bold;
+  text-decoration: underline;
+  color: rgb(71, 69, 69);
+}
+label {
+  font-weight: bold;
+}
 
-  .login-submit-button,.signup-submit-button,
-  .login-signup-button,.signup-back-button,.logout-button{
-    top: 10rem;
-    position: absolute;
-    left: 10rem;     
-    width: 120px;
-    height:40px;
-    border-radius: 20%;
-    background-color: dodgerblue;
-    color: white;
-    right: 0px;
-    padding: 5px;
-    margin-top:10px;
+.selected-title {
+  font-weight: bold;
+  text-decoration: underline;
+  margin-left: 1rem;
+}
 
-  }
-  .logout-button{
-    
-    top: 2rem;
-    left: 70rem;
-  }
-  .signup-back-button{
-    left: 6rem;
-    top: 13rem;
-  }
-  .login-signup-button{
-    top:14rem;
-  }
-  .signup-submit-button{
-    left: 16rem;
-    top: 13rem;
-  }
-  
+.login-submit-button,
+.signup-submit-button,
+.login-signup-button,
+.signup-back-button,
+.logout-button {
+  top: 10rem;
+  position: absolute;
+  left: 10rem;
+  width: 120px;
+  height: 40px;
+  border-radius: 20%;
+  background-color: dodgerblue;
+  color: white;
+  right: 0px;
+  padding: 5px;
+  margin-top: 10px;
+}
+.login-submit-button {
+  top: 12rem;
+}
+.logout-button {
+  top: 2rem;
+  left: 70rem;
+}
+.signup-back-button {
+  left: 6rem;
+  top: 13rem;
+}
+.login-signup-button {
+  top: 16rem;
+}
+.signup-submit-button {
+  left: 16rem;
+  top: 13rem;
+}
 
-  
-  .login-password{
-    margin-left: 12px;
+.login-password {
+  margin-left: 12px;
+}
+.signup-username {
+  margin-left: 55px;
+}
+.signup-password1 {
+  margin-left: 65px;
+}
 
-  }
-  .signup-username{
-    margin-left: 55px;
-
-  }
-  .signup-password1{
-    margin-left: 65px;
-  }
-  
-
-  .loginpage-container,.signuppage-container{
-    position: absolute;
-    width: 25rem;
-    height: 15rem;
-    background-color: whitesmoke;
-    top:12rem;
-    left:50%;
-    z-index: 121;
-    border-radius: 12%;
-    padding-top: 5rem;
-    padding-left: 4rem; 
-    transform: translateX(-50%); 
-
-  }
-
- 
-
-
- 
+.loginpage-container,
+.signuppage-container {
+  position: absolute;
+  width: 25rem;
+  height: 15rem;
+  background-color: whitesmoke;
+  top: 12rem;
+  left: 50%;
+  z-index: 121;
+  border-radius: 12%;
+  padding-top: 5rem;
+  padding-left: 4rem;
+  transform: translateX(-50%);
+}
+#tourForm-touridLabel,
+#login-errorLabel {
+  color: red;
+  font-size: 12px;
+}

@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import PlayerService from "../data/PlayerService";
+import { httpActions } from "../store/httpReducer";
+import { loadPlayers } from "../store/tournamentReducer";
 import "./Add-player-form.css";
-import SelectPlayers from "./SelectPlayers";
-import { useSelector } from "react-redux";
 import Player from "./PlayerC";
+import SelectPlayers from "./SelectPlayers";
+
 
 const AddPlayerSection = (props) => {
   let players = useSelector((state) => state.tournament.players);
   let selectedPlayers = [];
+  let inputName = useRef();
+    let inputElo = useRef();
+    let inputClub = useRef();
+    const state = useSelector((state) => state.tournament);
+    const dispatch = useDispatch();
+    let inputUsername = state.username;
 
   selectedPlayers = players.map((el) => {
     return (
@@ -22,17 +32,45 @@ const AddPlayerSection = (props) => {
       </div>
     );
   });
-  const submit = (event) => {
-    props.submit(event);
+  const submitPlayerHandler = (event) => {
+    event.preventDefault();    
+
+    if (inputName.current.value !== "" && inputElo.current.value !== "") {
+      let player = {
+        name: inputName.current.value,
+        elo: inputElo.current.value,
+        club: inputClub.current.value,
+        username: inputUsername,
+      };
+
+      PlayerService.postPlayer(player)
+        .then((result) => {
+          console.log(result);
+          console.log("PlayerService.postPlayer(player) ");
+          dispatch(loadPlayers(state.username));
+        })
+        .catch((error) => {
+          console.log("PlayerService.postPlayer(player) ");
+          dispatch(loadPlayers(state.username));
+          dispatch(httpActions.displayError(error.message));
+        }); // save it to database
+
+      inputName.current.value = "";
+      inputElo.current.value = "";
+      inputClub.current.value = "";
+    } else {
+      window.alert("Player's name and elo-rating are required!");
+    }
   };
+
   return (
     <div className="main-section-addplayer">
       <div className=" items">
         <h3> Add Players</h3>
-        <form onSubmit={submit}>
+        <form onSubmit={submitPlayerHandler}>
           <label htmlFor="name">Name*</label>
           <br />
-          <input type="text" id="name" name="Name" placeholder="Your name..." />
+          <input type="text" ref={inputName} id="name" name="Name" placeholder="Your name..." />
           <br />
           <label>Elo-rating*</label>
           <br />
@@ -41,6 +79,7 @@ const AddPlayerSection = (props) => {
             type="text"
             name="EloRating"
             placeholder="Your elo rating.."
+            ref={inputElo}
           />
           <br />
           <label>Club</label>
@@ -50,6 +89,7 @@ const AddPlayerSection = (props) => {
             type="text"
             name="Club"
             placeholder="Your chess club.."
+            ref={inputClub}
           />
           <br />
 

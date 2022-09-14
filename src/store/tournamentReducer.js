@@ -117,10 +117,7 @@ export const tournamentReducer = createSlice({
     },
     removeTourPlayersList(state, action) {
       let player = action.payload;
-      console.log("Inside  removeTourPlayersList");
-      console.log(player[0]);
       state.players = state.players.filter((plr) => player[0].id !== plr.id);
-      console.log(state);
     },
     selectAllDBPlayers(state, action) {
       state.players = state.dbPlayers;
@@ -157,25 +154,25 @@ export const loadPlayers = (username) => async (dispatch) => {
 };
 
 export const checkLoginUser = (user) => async (dispatch) => {
-  console.log(user);
-
   UserService.checkUserData(user).then((response) => {
+    console.log("Response from checkLoginUser ");
+    console.dir(response);
     if (response.userPasswordMatches)
-      dispatch(tournamentReducer.actions.login(response.user.username));
+      dispatch(tournamentActions.login(response.user.username));
+    else if (response.user === null)
+      dispatch(httpActions.displayUserError(user.username));
+    else if (response.userPasswordMatches === false)
+      dispatch(httpActions.displayPasswordError());
   });
 };
 export const checkSignupUser = (user) => async (dispatch) => {
-  console.log(user);
-
   UserService.checkUserData(user).then((response) => {
-    console.log("checkUserData response");
-    console.log(response);
     //if there are no existing users with the same name then save the user to db and log him in
     if (response.user == null) {
       UserService.postUserData(user).catch((error) => {
         dispatch(httpActions.displayError(error.message));
       }); // save the new user to database
-      dispatch(tournamentReducer.actions.login(user.username));
+      dispatch(tournamentActions.login(user.username));
     }
   });
 };

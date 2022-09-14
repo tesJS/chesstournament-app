@@ -1,30 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Link, Switch, Route } from "react-router-dom";
-import "./Main.css";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PlayerService from "./data/PlayerService";
-import Player from "./data/Player";
-import TourForm from "./components/TournamentForm";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import AddPlayerSection from "./components/AddPlayerSection";
-import Home from "./components/Home";
-import Tournament from "./data/Tournament";
-import cloneDeep from "clone-deep";
 import ContactForm from "./components/ContactForm";
-import { httpActions } from "./store/httpReducer";
+import Home from "./components/Home";
+import TourForm from "./components/TournamentForm";
+import "./Main.css";
 import { loadPlayers, tournamentActions } from "./store/tournamentReducer";
 
 const Main = () => {
-  let [playerAdded, setPlayerAdded] = useState(false);
   const state = useSelector((state) => state.tournament);
   const dispatch = useDispatch();
 
-  const DOMstrings = {
-    inputName: "#name",
-    inputElo: "#eloRating",
-    inputClub: "#club",
-  };
   console.log("====================================");
-  console.log("Tournament State");
+  console.log("Tournament State from Main Component");
   console.log(state);
   console.log("====================================");
   // run once all components are loaded to display players list from the database or show errors if not succeeded
@@ -36,82 +25,9 @@ const Main = () => {
     dispatch(loadPlayers(state.username));
   }, [dispatch, state.username]);
 
-  const submitPlayerHandler = (event) => {
-    event.preventDefault();
-
-    let inputName = document.querySelector(DOMstrings.inputName);
-    let inputElo = document.querySelector(DOMstrings.inputElo);
-    let inputClub = document.querySelector(DOMstrings.inputClub);
-    let inputUsername = state.username;
-
-
-    
-    if (inputName.value !== "" && inputElo.value !== "") {
-
-      let player = {
-        name: inputName.value,
-        elo: inputElo.value,
-        club: inputClub.value,
-        username: inputUsername,
-      };
-  
-      PlayerService.postPlayer(player)
-        .then((result) => {
-          console.log(result);
-          console.log("PlayerService.postPlayer(player) ");
-          dispatch(loadPlayers(state.username));
-        })
-        .catch((error) => {
-          console.log("PlayerService.postPlayer(player) ");
-          dispatch(loadPlayers(state.username));
-          dispatch(httpActions.displayError(error.message));
-        }); // save it to database
-
-      inputName.value = "";
-      inputElo.value = "";
-      inputClub.value = "";
-    } else  {
-      window.alert("Player's name and elo-rating are required!");
-    }
-  };
-
   //Save tournament form data to the Redux Store but not yet to Tournament table in chesstourDB
   // which will be done at the end of the tournament by saveButtonHandler in LowerSection Button
 
-  const submitTourHandler = (event) => {
-    event.preventDefault();
-    let tourForm = {};
-    let tourdetailsField = document.querySelector("#tournamentDesc");
-    let noplayersField = document.querySelector("#noplayers");
-    let noroundsField = document.querySelector("#rounds");
-    let touridField = document.querySelector("#tourid");
-    let username = state.username;
-    let noplayers = cloneDeep(parseInt(noplayersField.value));
-    let tourdetails = cloneDeep(tourdetailsField.value);
-    let norounds = cloneDeep(noroundsField.value);
-    let tourid = cloneDeep(touridField.value);
-
-
-    if(tourid!==""&&norounds!==""){
-      tourForm = {
-      noplayers,
-      tourdetails,
-      norounds,
-      tourid,
-      username,
-    };
-    
-    tourdetailsField.value="";
-    noplayersField.value="";
-    noroundsField.value="";
-    touridField.value="";
-    dispatch(tournamentActions.addTournamentForm(tourForm));
-    
-    }
-    else 
-    window.alert("Tournament's id and number of rounds are required!");
-    
-  };
   const logoutHandler = () => {
     /* let pairButton = document.querySelector(".pairButton");
       pairButton.disabled = false; */
@@ -166,17 +82,13 @@ const Main = () => {
             <Route
               exact
               path="/add"
-              render={(props) => (
-                <AddPlayerSection {...props} submit={submitPlayerHandler} />
-              )}
+              render={(props) => <AddPlayerSection {...props} />}
             />
 
             <Route
               exact
               path="/tour"
-              render={(props) => (
-                <TourForm {...props} submitTourForm={submitTourHandler} />
-              )}
+              render={(props) => <TourForm {...props} />}
             />
 
             <Route exact path="/contact" component={ContactForm} />

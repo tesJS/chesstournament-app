@@ -1,13 +1,15 @@
 import React, { Fragment } from "react";
-import "./Main.css";
-import { useDispatch, useSelector } from "react-redux";
-import Main from "./Main";
+import { useSelector } from "react-redux";
 import LoginMain from "./components/LoginMain";
-import { tournamentActions } from "./store/tournamentReducer";
+import Main from "./Main";
+import "./Main.css";
 
 const App = () => {
   const localState = useSelector((state) => state.tournament);
-
+  console.log("====================================");
+  console.log("Tournament State from App Component");
+  console.log(localState);
+  console.log("====================================");
   return (
     <Fragment>
       {localState.login && <Main />}

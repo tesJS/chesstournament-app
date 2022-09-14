@@ -1,14 +1,25 @@
-import React, { Fragment, useState } from "react";
-import { tournamentActions } from "./store/tournamentReducer";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { checkLoginUser } from "./store/tournamentReducer";
-import "./Main.css";
 import User from "./data/User";
+import "./Main.css";
+import { checkLoginUser, tournamentActions } from "./store/tournamentReducer";
 
 const Login = (props) => {
-  const signupButton = useState(false);
+  let errorLabel = useRef();
+
+  const localState = useSelector((state) => state.http);
+  const dispatch = useDispatch();
+
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    console.log("Login useffect is called");
+    if (localState.httpError) {
+      setError(localState.httpErrorMessage);
+    }
+  }, [dispatch, localState.httpErrorMessage]);
 
   function usernameHandler(event) {
     setUserName(event.target.value);
@@ -16,8 +27,6 @@ const Login = (props) => {
   function passwordHandler(event) {
     setPassword(event.target.value);
   }
-  const localState = useSelector((state) => state.tournament);
-  const dispatch = useDispatch();
 
   const loginFormSubmitHandler = (event) => {
     event.preventDefault();
@@ -27,8 +36,6 @@ const Login = (props) => {
 
   const handleSignupButton = (event) => {
     event.preventDefault();
-    console.log(localState);
-    console.log("Signup Button from Login.js");
     dispatch(tournamentActions.signup(true));
   };
   return (
@@ -46,6 +53,7 @@ const Login = (props) => {
             name="username"
             onBlur={usernameHandler}
           ></input>
+
           <br />
           <br></br>
           <label htmlFor="password">Password: </label>
@@ -55,6 +63,11 @@ const Login = (props) => {
             id="password"
             onBlur={passwordHandler}
           ></input>
+          <br />
+          <br />
+          <label ref={errorLabel} id="login-errorLabel">
+            {error}
+          </label>
           <input
             className="login-submit-button"
             type="submit"

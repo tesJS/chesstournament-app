@@ -1,6 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Pairings from '../components/Pairings';
-import { useSelector, useDispatch } from 'react-redux';
 
 const PairingListSection = function (props) {
   
