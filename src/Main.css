@@ -144,7 +144,8 @@ label {
   transform: translateX(-50%);
 }
 #tourForm-touridLabel,
-#login-errorLabel {
+#login-errorLabel,
+#signup-errorLabel {
   color: red;
   font-size: 12px;
 }
