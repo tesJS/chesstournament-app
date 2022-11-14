@@ -43,8 +43,8 @@ const TourForm = (props) => {
             noroundsField.current.value = "";
             touridField.current.value = "";
             dispatch(tournamentActions.addTournamentForm(tourForm));
+            setErrorMessage("");
           } else {
-            console.log(" After TournamentService.checkTourId failed:");
             setErrorMessage(" Not Unique tourid!!! ");
           }
         })

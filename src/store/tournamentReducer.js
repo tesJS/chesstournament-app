@@ -169,11 +169,15 @@ export const checkLoginUser = (user) => async (dispatch) => {
 export const checkSignupUser = (user) => async (dispatch) => {
   UserService.checkUserData(user).then((response) => {
     //if there are no existing users with the same name then save the user to db and log him in
-    if (response.user == null) {
+    if (response.user === null) {
       UserService.postUserData(user).catch((error) => {
         dispatch(httpActions.displayError(error.message));
       }); // save the new user to database
       dispatch(tournamentActions.login(user.username));
+    } else {
+      dispatch(
+        httpActions.displayError(`User ${user.username} already exists!`)
+      );
     }
   });
 };
