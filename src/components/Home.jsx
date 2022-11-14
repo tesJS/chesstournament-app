@@ -6,8 +6,7 @@ import LowerSection from "./LowerSection";
 import PairingListSection from "./PairingListSection";
 
 function Home(props) {
-  const httpError = useSelector((state) => state.httpError);
-  const httpErrorMessage = useSelector((state) => state.httpErrorMessage);
+  
   return (
     <div className="container">
       <div className="pairingListSection item">
