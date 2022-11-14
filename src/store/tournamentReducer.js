@@ -154,7 +154,8 @@ export const loadPlayers = (username) => async (dispatch) => {
 };
 
 export const checkLoginUser = (user) => async (dispatch) => {
-  UserService.checkUserData(user).then((response) => {
+  UserService.checkUserData(user)
+  .then((response) => {
     console.log("Response from checkLoginUser ");
     console.dir(response);
     if (response.userPasswordMatches)

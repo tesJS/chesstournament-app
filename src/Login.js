@@ -19,7 +19,7 @@ const Login = (props) => {
     if (localState.httpError) {
       setError(localState.httpErrorMessage);
     }
-  }, [dispatch, localState.httpErrorMessage]);
+  }, [dispatch, localState.httpErrorMessage, localState.httpError]);
 
   function usernameHandler(event) {
     setUserName(event.target.value);
@@ -29,6 +29,7 @@ const Login = (props) => {
   }
 
   const loginFormSubmitHandler = (event) => {
+    
     event.preventDefault();
     let user = new User(username, password, "GUEST");
     dispatch(checkLoginUser(user));

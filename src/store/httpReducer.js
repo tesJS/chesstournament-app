@@ -15,7 +15,7 @@ export const httpReducer = createSlice({
     },
     displayUserError(state, action) {
       state.httpError = true;
-      state.httpErrorMessage = ` User ${action.payload} does not exist in the database!!!`;
+      state.httpErrorMessage = ` ${action.payload} does not exist in the user database!!!`;
     },
     displayPasswordError(state) {
       state.httpError = true;
@@ -23,7 +23,7 @@ export const httpReducer = createSlice({
     },
     removeError(state) {
       state.httpError = false;
-      state.httpErrorMessage = "No System Errors !!!";
+      state.httpErrorMessage = "Add players !!!";
     },
     reset(state) {
       state.httpError = false;
