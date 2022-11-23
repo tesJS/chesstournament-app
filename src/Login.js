@@ -15,7 +15,7 @@ const Login = (props) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    console.log("Login useffect is called");
+    
     if (localState.httpError) {
       setError(localState.httpErrorMessage);
     }

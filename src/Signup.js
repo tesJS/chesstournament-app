@@ -7,18 +7,16 @@ import "./Main.css";
 function Signup(props) {
   const dispatch = useDispatch();
   let errorLabel = useRef();
-  const [error, setError] = useState("");
-  let passwordsMatch = false;
+  const [error, setError] = useState("");  
   const localState = useSelector((state) => state.tournament);
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
 
   useEffect(() => {
-    console.log("Signup useEffect");
-    console.log(localState.httpErrorMessage);
+   
     setError(localState.httpErrorMessage);
-  }, [dispatch, localState.httpError]);
+  }, [dispatch, localState.httpError,localState.httpErrorMessage]);
 
   function usernameHandler(event) {
     setUserName(event.target.value);

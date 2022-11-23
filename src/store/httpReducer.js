@@ -15,7 +15,7 @@ export const httpReducer = createSlice({
     },
     displayUserError(state, action) {
       state.httpError = true;
-      state.httpErrorMessage = ` ${action.payload} does not exist in the user database!!!`;
+      state.httpErrorMessage = ` ${action.payload??" "} does not exist in the user database!!!`;
     },
     displayPasswordError(state) {
       state.httpError = true;

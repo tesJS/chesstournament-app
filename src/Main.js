@@ -12,10 +12,8 @@ const Main = () => {
   const state = useSelector((state) => state.tournament);
   const dispatch = useDispatch();
 
-  console.log("====================================");
-  console.log("Tournament State from Main Component");
-  console.log(state);
-  console.log("====================================");
+ 
+  
   // run once all components are loaded to display players list from the database or show errors if not succeeded
 
   //ajax request is sent by PlayersService to Postgres database to fetch players data
@@ -64,7 +62,7 @@ const Main = () => {
                 to="/contact"
                 style={{ color: "blue", textDecoration: "none" }}
               >
-                Contact Us
+                Docs
               </Link>
             </li>
           </ul>

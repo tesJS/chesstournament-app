@@ -59,8 +59,7 @@ export const tournamentReducer = createSlice({
       state.pairedList = action.payload.pairedList;
       state.storeResults = action.payload.storeResults;
       state.showResultButtonClicked = action.payload.showResultButtonClicked;
-      /* console.log(action.payload);
-      state=cloneDeep( action.payload);  */
+      
     },
 
     submitButtonUpdate(state, action) {
@@ -128,6 +127,7 @@ export const tournamentReducer = createSlice({
   },
 });
 
+
 export const loadPlayers = (username) => async (dispatch) => {
   PlayerService.getPlayers(username)
     .then((response) => {
@@ -156,8 +156,7 @@ export const loadPlayers = (username) => async (dispatch) => {
 export const checkLoginUser = (user) => async (dispatch) => {
   UserService.checkUserData(user)
   .then((response) => {
-    console.log("Response from checkLoginUser ");
-    console.dir(response);
+    
     if (response.userPasswordMatches)
       dispatch(tournamentActions.login(response.user.username));
     else if (response.user === null)

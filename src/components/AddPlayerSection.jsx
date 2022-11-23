@@ -45,12 +45,11 @@ const AddPlayerSection = (props) => {
 
       PlayerService.postPlayer(player)
         .then((result) => {
-          console.log(result);
-          console.log("PlayerService.postPlayer(player) ");
+          
           dispatch(loadPlayers(state.username));
         })
         .catch((error) => {
-          console.log("PlayerService.postPlayer(player) ");
+         
           dispatch(loadPlayers(state.username));
           dispatch(httpActions.displayError(error.message));
         }); // save it to database
