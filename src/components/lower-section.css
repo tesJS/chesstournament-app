@@ -6,21 +6,18 @@
   /* border: 2px solid rgb(190, 104, 6); */
   align-items: center;
 }
-.submitButton,
-.showSaveButton,
-.pairButton,
-.showResultButton,
-.resetButton {
+.lowerhalf button {
   border-radius: 12px;
   width: 10rem;
   height: 100px;
-  background-color: blue;
+  background-color: blue; 
   color: rgb(198, 198, 202);
   margin-right: 30px;
   margin-left: 30px;
   padding: 5px;
   font-size: large;
 }
+
 .resetButton {
   background-color: rgba(255, 0, 0, 1);
 }

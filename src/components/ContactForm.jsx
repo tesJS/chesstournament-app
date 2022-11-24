@@ -12,6 +12,13 @@ const ContactForm = function (props) {
         then select the tournament players (see the Add Page below for more).
       </p>
       <p>
+        To retrieve or edit previously played tournaments,players data, User can
+        browse to the following link{" "}
+        <a href="http://16.171.44.60:8080/login">Saved Data</a>. This website is
+        accessed by using the same user credential as used in the main login
+        page.
+      </p>
+      <p>
         Now user switches to Home page to conduct the tournament rounds (See
         Home Page for more). Aftier all the rounds are played user has the
         option of saving the tournament data or just hit the show result button

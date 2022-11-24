@@ -1,14 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./lower-section.css";
-import Pairings from "../components/Pairings";
 import Round from "../data/Round";
 import TournamentResult from "../data/TournamentResult";
 import PlayerService from "../data/PlayerService";
 import { tournamentActions } from "../store/tournamentReducer";
 import cloneDeep from "clone-deep";
 import { httpActions } from "../store/httpReducer";
-import { isNull } from "underscore";
+
 
 const LowerSection = function (props) {
   const dispatch = useDispatch();

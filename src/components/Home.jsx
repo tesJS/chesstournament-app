@@ -1,6 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import "./Home.css";
+import "../Main.css";
 import ListTourPlayers from "./ListTourPlayers";
 import LowerSection from "./LowerSection";
 import PairingListSection from "./PairingListSection";
