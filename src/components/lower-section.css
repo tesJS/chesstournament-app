@@ -19,8 +19,8 @@
 }
 
 .resetButton {
-  background-color: rgba(255, 0, 0, 1);
+  background-color: rgba(255, 0, 0, 1)  !important;
 }
 .showSaveButton {
-  background-color: rgb(9, 65, 46);
+  background-color: rgb(9, 65, 46) !important;
 }

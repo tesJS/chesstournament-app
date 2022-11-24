@@ -36,7 +36,7 @@ const Main = () => {
   return (
     <div className="App">
       <Router>
-        <div className="header items">
+        <div className="header items clearfix">
           <h2> Chess Tournament Software </h2>
           <ul className="App-header">
             <li>
@@ -64,6 +64,10 @@ const Main = () => {
               >
                 Docs
               </Link>
+            </li>
+            <li>
+              {" "}
+              <a href="http://16.171.44.60:8080/login">History</a>
             </li>
           </ul>
           <input

@@ -143,25 +143,31 @@ const ContactForm = function (props) {
 
       <p>
         <b>The Add Players Form</b>
-        This form has name, elo-rating and club fields. The name and elo-raing
-        fields are required while the club field is optional. Name user enters
-        the name of the player. Elo-rating The rating of players in number
-        format Club The chess club of the player{" "}
+        <p>
+          This form has name, elo-rating and club fields. The name and elo-raing
+          fields are required while the club field is optional. Name user enters
+          the name of the player. Elo-rating The rating of players in number
+          format Club The chess club of the player{" "}
+        </p>
       </p>
 
       <p>
         <b>List of players </b>
-        This section lists all players that the user had saved before. They are
-        collected from the database asynchronously.{" "}
+        <p>
+          This section lists all players that the user had saved before. They
+          are collected from the database asynchronously.{" "}
+        </p>
       </p>
 
       <p>
-        <b>Selected Players</b>
-        list Lists players that are selected to participate in the upcoming
-        tournament. User can click individually a player from the List of
-        Players section or press the Add All button to select all of the players
-        from that list. User has also option to remove player from the selected
-        list by clicking on it.
+        <b>Tournament Players</b>
+        <p>
+          It lists players that are selected to participate in the upcoming
+          tournament. User can click individually a player from the List of
+          Players section or press the Add All button to select all of the
+          players from that list. User has also option to remove player from the
+          selected list by clicking on it.
+        </p>
       </p>
     </div>
   );

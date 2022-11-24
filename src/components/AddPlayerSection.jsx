@@ -64,12 +64,18 @@ const AddPlayerSection = (props) => {
 
   return (
     <div className="main-section-addplayer">
-      <div className=" items">
+      <div className=" add-player-item">
         <h3> Add Players</h3>
         <form onSubmit={submitPlayerHandler}>
           <label htmlFor="name">Name*</label>
           <br />
-          <input type="text" ref={inputName} id="name" name="Name" placeholder="Your name..." />
+          <input
+            type="text"
+            ref={inputName}
+            id="name"
+            name="Name"
+            placeholder="Your name..."
+          />
           <br />
           <label>Elo-rating*</label>
           <br />
@@ -97,11 +103,13 @@ const AddPlayerSection = (props) => {
           <br />
         </form>
       </div>
-      <div className="items">
+      <div className="add-player-item">
         <SelectPlayers />
       </div>
       <div>
-        <p className="selected-title">Players Selected For This Tournament</p>
+        <p className="add-player-item selected-title">
+          Tournament Players 
+        </p>
         {selectedPlayers}
       </div>
     </div>

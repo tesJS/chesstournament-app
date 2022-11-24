@@ -23,4 +23,11 @@
   label{
     font-weight: bold;
   }
+  @media all and (max-width: 620px) {
+      .main-section-addplayer{
+            display: flex;
+            flex-direction: column;
+            row-gap: 1rem;
+          }
+  }
   
