@@ -13,10 +13,10 @@ const ContactForm = function (props) {
       </p>
       <p>
         To retrieve or edit previously played tournaments,players data, User can
-        browse to the following link{" "}
-        <a href="http://16.171.44.60:8080/login">Saved Data</a>. This website is
-        accessed by using the same user credential as used in the main login
-        page.
+        use the History link on the home page. This link opens a new window
+        which displays the data saved in the database. But the user is first required to enter the 
+        same credentials again to get access. In this new website the user can also edit players, 
+        tournament infos.
       </p>
       <p>
         Now user switches to Home page to conduct the tournament rounds (See

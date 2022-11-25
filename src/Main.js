@@ -67,7 +67,9 @@ const Main = () => {
             </li>
             <li>
               {" "}
-              <a href="http://16.171.44.60:8080/login">History</a>
+              <a href="http://16.171.44.60:8080/login" target="_blank" rel="noreferrer">
+                History
+              </a>
             </li>
           </ul>
           <input

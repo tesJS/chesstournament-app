@@ -28,11 +28,18 @@
   color: rgb(17, 6, 49);
 }
 .logout-button {
+  float: right;
   border-radius: 20%;
   color: blue;
   background-color: yellow;
   height: 30px;
 }
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 .body {
   grid-row: 2;
   grid-column: 1;
