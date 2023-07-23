@@ -6,10 +6,7 @@ import "./Main.css";
 
 const App = () => {
   const localState = useSelector((state) => state.tournament);
-  console.log("====================================");
-  console.log("Tournament State from App Component");
-  console.log(localState);
-  console.log("====================================");
+  
   return (
     <Fragment>
       {localState.login && <Main />}

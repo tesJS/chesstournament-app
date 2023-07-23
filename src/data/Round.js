@@ -142,10 +142,8 @@ class Round {
     return this.byePlayer;
   }
   generateRoundGames() {
-    let player1,
-      players1,
-      player2,
-      players2,
+    let player1,      
+      player2,      
       playerGames,
       game,
       pairedPlayers = [],
@@ -240,10 +238,10 @@ class Round {
             if (counter === 1) {
               sortPlayersByScore(players);
             } else {
-              players1 = [...players];
+              players = [...players];
 
               players = shufflePlayers(players);
-              players2 = [...players];
+              
             }
             playerGames = this.filterGames(allGames, players[0], players);
             if (playerGames !== null) {
